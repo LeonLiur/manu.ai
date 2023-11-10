@@ -1,40 +1,43 @@
-'use client';
+"use client"
 
-import React, { useState } from 'react';
+// pages/index.js
+import InputBox from "../components/ui/InputBox";
+import ButtonIcon from "@/components/ui/ButtonIcon";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
-export default function Home(){
+const Home = () => {
   const [inputValue, setInputValue] = useState("");
 
-  return(
-    <>
-      <header className = "flex justify-between items-center mb-4">
-        <h1 className="text-2xl">Manu.AI</h1>
-        <button className="border border-slate-300 text-slate-300 px-2 py-1 rounded
-        hover:bg-slate-700 focus-within:bg-slate-700 outline-none"
-        >
-          Test
-        </button>
-      </header>
-      <div className = "p-4">
-        {inputBox(inputValue, setInputValue)}
+  const handleInputChange = (event) => {
+    setInputValue(event.target.value);
+  };
+
+  const handleEnterPress = () => {
+    console.log("Enter pressed! Do something special.");
+  };
+
+  return (
+      <div className="mx-auto pt-20 py-6 items-center justify-center" style={{width: "100%", height: "100%"}}>
+        <div className="flex flex-col justify-center items-center h-full" style={{padding: "20px", width: "100%"}}>
+            <div className="w-1/3 p-4" style={{padding: "25px"}}>
+              <h1 className="text-5xl bg-gradient-to-bl text-center font-bold leading-5">
+                Ask 
+                <span className="text-blue-300"> Away </span>
+              </h1>
+            </div>
+            <div className="w-2/3 p-4 flex">
+              <InputBox
+                  placeholder="Type something..."
+                  onChange={handleInputChange}
+                  onSubmit={handleEnterPress}
+                  value={inputValue}
+                />
+                <ButtonIcon />
+            </div>
+        </div>
       </div>
-    </>
   );
 };
 
-function inputBox({inputValue, setInputValue}){
-  
-  const handleInputChange = (e) => {
-    setInputValue(e.target.value);
-  };
-
-  return(
-    <input
-          type="text"
-          value={inputValue}
-          onChange={handleInputChange}
-          className="border rounded p-2 placeholder-blue-500::placeholder text-slate-900"
-          placeholder= "Enter text..."
-    />
-  )
-};
+export default Home;
