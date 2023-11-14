@@ -61,6 +61,7 @@ venv
 docs.zip
 archive.zip
 *.sqlite3
+*.pyc
 
 # vim temporary files
 *~
