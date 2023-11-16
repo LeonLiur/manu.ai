@@ -4,6 +4,7 @@ from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 import chromadb
 import PyPDF2 as pypdf
+import pdfminer
 from tqdm import tqdm
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.document_loaders import PyPDFLoader
@@ -12,6 +13,8 @@ from langchain.embeddings import OpenAIEmbeddings
 import os
 from langchain.vectorstores import Chroma
 from langchain.chat_models import ChatOpenAI
+from pdfminer.high_level import extract_pages
+from pdfminer.image import ImageWriter
 
 
 chroma_client = chromadb.PersistentClient(path="./db/")
@@ -67,7 +70,7 @@ async def upload_item(
     chunk_size: int = 300,
     overlap: float = 0,
 ):
-    contents = await file.read()
+
     pdf = pypdf.PdfReader(file.file)
 
     document_text = get_text_from_pdf(pdf, manual_name)
@@ -107,50 +110,28 @@ def get_images_from_pdf(pdf_in, manual_name):
     os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
     image_id = 0
-    for i in tqdm(range(len(pdf_in.pages))):
-        page = pdf_in.getPage(i)
-        xObject = page['/Resources']['/XObject'].getObject()
-        for obj in xObject:
-            if xObject[obj]['/Subtype'] == '/Image':
-                if xObject[obj]['/Filter'] == '/CCITTFaxDecode':
-                    if xObject[obj]['/DecodeParms']['/K'] == -1:
-                        CCITT_group = 4
-                    else:
-                        CCITT_group = 3
-                    width = xObject[obj]['/Width']
-                    height = xObject[obj]['/Height']
-                    data = xObject[obj]._data
-                    img_size = len(data)
-                    tiff_header = tiff_header_for_CCITT(width, height, img_size, CCITT_group)
-                    img_name = obj[1:] + '.tiff'
-                    with open(f'./storage/{manual_name}/images/{image_id}_{img_name}', 'wb') as img_file:
-                        img_file.write(tiff_header + data)
+    for page in tqdm(pdf_in.pages):
+        try:
+            for image in page.images:
+                with open(f'./storage/{manual_name}/images/{image_id}_{image.name}', "wb") as f:
+                    f.write(image.data)
                     image_id += 1
-        
-        # try:
-        #     for image in page.images:
-        #         with open(f'./storage/{manual_name}/images/{image_id}_{image.name}', "wb") as f:
-        #             f.write(image.data)
-        #             image_id += 1
-        # except Exception as e:
-        #     print(f"[-] {e} occured")
-        #     continue
-                
-        
-def tiff_header_for_CCITT(width, height, img_size, CCITT_group=4):
-    tiff_header_struct = '<' + '2s' + 'H' + 'L' + 'H' + 'HHLL' * 8 + 'L'
-    return struct.pack(tiff_header_struct,
-                       b'II',  # Byte order indication: Little indian
-                       42,  # Version number (always 42)
-                       8,  # Offset to first IFD
-                       8,  # Number of tags in IFD
-                       256, 4, 1, width,  # ImageWidth, LONG, 1, width
-                       257, 4, 1, height,  # ImageLength, LONG, 1, lenght
-                       258, 3, 1, 1,  # BitsPerSample, SHORT, 1, 1
-                       259, 3, 1, CCITT_group,  # Compression, SHORT, 1, 4 = CCITT Group 4 fax encoding
-                       262, 3, 1, 0,  # Threshholding, SHORT, 1, 0 = WhiteIsZero
-                       273, 4, 1, struct.calcsize(tiff_header_struct),  # StripOffsets, LONG, 1, len of header
-                       278, 4, 1, height,  # RowsPerStrip, LONG, 1, lenght
-                       279, 4, 1, img_size,  # StripByteCounts, LONG, 1, size of image
-                       0  # last IFD
-                       )
+        except Exception as e:
+            print(f"[-] {e} occured")
+            continue
+    
+def get_image(layout_object):
+    if isinstance(layout_object, pdfminer.layout.LTImage):
+        return layout_object
+    if isinstance(layout_object, pdfminer.layout.LTContainer):
+        for child in layout_object:
+            return get_image(child)
+    else:
+        return None
+
+
+def save_images_from_page(page: pdfminer.layout.LTPage):
+    images = list(filter(bool, map(get_image, page)))
+    iw = ImageWriter('output_dir')
+    for image in images:
+        iw.export_image(image)
