@@ -59,7 +59,7 @@ async def query(id: str, qstring: str):
     
     llm_result = await llm.apredict(f"You are a user manual helping a user troubleshoot their issue: {qstring}. Generate succinct instructions. Here are some embeddings from the user's manual that are the most relevant: {result_documents}, with their respective distances: {result_distances}")
 
-    return llm_result
+    return {"result": llm_result, "query_distances" : result_distances, "query_documents": result_documents}
 
 
 @app.post("/upload")
@@ -68,7 +68,7 @@ async def upload_item(
     manual_name: str,
     file: UploadFile = File(...),
     chunk_size: int = 300,
-    overlap: float = 0,
+    overlap: float = 0.5,
 ):
     text = handle_pdf(file.file, manual_name, manual_id)
 
