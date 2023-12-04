@@ -4,8 +4,9 @@ import React, { useState } from 'react'
 
 export default async function () {
     const [size, setSize] = useState(0);
+    const BACKEND_URL = process.env.BACKEND_URL;
+
     async function handleFileUpload() {
-        console.log
         if (!file.files[0]) {
             console.log("No file selected")
         } else {
@@ -13,7 +14,7 @@ export default async function () {
             const formData = new FormData();
             formData.append("file", file.files[0]);
             console.log(formData)
-            const res = await fetch('http://127.0.0.1:8000/pdf', {
+            const res = await fetch(`${BACKEND_URL}/pdf`, {
                 method: 'POST',
                 body: formData
             }).then(data => data.json());
@@ -25,7 +26,6 @@ export default async function () {
         <div>
             <input id="file" type="file"/>
             <button onClick={handleFileUpload}>Upload</button>
-            <p>{size}</p>
         </div>
     )
 }
