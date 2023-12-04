@@ -45,6 +45,7 @@ def read_root():
 async def back_and_forth(messages):
     return
 
+
 @app.get("/query")
 async def query(id: str, qstring: str):
     collection = chroma_client.get_collection(id)
@@ -61,19 +62,22 @@ async def query(id: str, qstring: str):
         messages=[
             {
                 "role": "system",
-                "content": f"You are a manufacturer's customer service helping a user troubleshoot an issue with their dishwasher."
-                "You will be given an issue statement, some semantically similar embeddings in the manual, and "
-                "their distances. Generate a succinct response to help the user. DO NOT redirect them to get help from others."
+                "content": f"You are a manufacturer's customer service agent helping a user troubleshoot an issue with their device."
+                "You will be given a problem, and some semantically similar embeddings in the manual ranked by similiarities."
+                "Generate a response in less than three sentences to help the user. DO NOT redirect them to get help from others.",
             },
             {
                 "role": "user",
-                "content": f"Help me: {qstring}, here are semantically similar embeddings: {result_documents}, and their distances: {result_distances}"
-            }
+                "content": f"Help me: {qstring}, here are semantically similar embeddings ranked by similarity: {result_documents}",
+            },
         ],
         model="gpt-3.5-turbo-16k",
     )
 
-    return {"result": chat_completion.choices[0].message.content, "query_distances" : result_distances, "query_documents": result_documents}
+    return {
+        "result": chat_completion.choices[0].message.content,
+        "query_documents": result_documents,
+    }
 
 
 @app.post("/upload")
@@ -84,43 +88,38 @@ async def upload_item(
     chunk_size: int = 100,
     overlap: float = 0.3,
 ):
-    # text = handle_pdf(file.file, manual_name, manual_id)
-
-    # print(
-    #     f"splitting text with chunk_size={chunk_size}, overlap={chunk_size * overlap}"
-    # )
-    # text_splitter = RecursiveCharacterTextSplitter(
-    #     chunk_size=chunk_size,
-    #     chunk_overlap=chunk_size * overlap,
-    #     length_function=len,
-    #     add_start_index=True,
-    # )
-    # chunks = text_splitter.create_documents([text])
-
     collection = chroma_client.get_or_create_collection(name=manual_id)
-
-    # collection.add(
-    #     documents=[document.page_content for document in chunks],
-    #     metadatas=[document.metadata for document in chunks],
-    #     ids=[str(_id) for _id in range(len(chunks))],
-    # )
-    
-    tables = handle_tables(file.file)
     running_id = 0
-    
+
+    text, tables = handle_pdf(file.file, manual_name, manual_id)
+
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=chunk_size,
+        chunk_overlap=chunk_size * overlap,
+        length_function=len,
+        add_start_index=True,
+    )
+    chunks = text_splitter.create_documents([text])
+
+    collection.add(
+        documents=[document.page_content for document in chunks],
+        metadatas=[document.metadata for document in chunks],
+        ids=[str(running_id + _id) for _id in range(len(chunks))],
+    )
+    running_id += len(chunks)
+
     for k in tables:
         if len(tables[k]) == 0:
             continue
+
         collection.add(
             documents=[row for row in tables[k]],
-            metadatas=[{"page_number":str(k)} for row in tables[k]],
-            ids=[str(_id) for _id in range(running_id, running_id + len(tables[k]))]
+            metadatas=[{"page_number": str(k)} for row in tables[k]],
+            ids=[str(running_id + _id) for _id in range(len(tables[k]))],
         )
         running_id += len(tables[k])
-    
 
-    # return {"status": 200, "chunks": chunks}
-    return {"status": 200, "tables" : tables}
+    return {"status": 200, "chunks": chunks, "tables": tables}
 
 
 def handle_pdf(pdf_in, manual_name, manual_id):
@@ -131,8 +130,9 @@ def handle_pdf(pdf_in, manual_name, manual_id):
 
     # for page in tqdm(extract_pages(pdf_in)):
     #     save_images_from_page(page, manual_name, manual_id)
-    return text
-                    
+    tables = handle_tables(pdf_in)
+    return text, tables
+
 
 def handle_tables(pdf_in):
     length = len(pypdf.PdfReader(pdf_in).pages)
@@ -145,26 +145,9 @@ def handle_tables(pdf_in):
             df = df.ffill()
             for ind in df.index:
                 for col in df.columns:
-                    current_row = '|'.join(str(df[col][ind]) for col in df.columns)
+                    current_row = "|".join(str(df[col][ind]) for col in df.columns)
 
                     tables_on_this_page.append(current_row)
         tables[page] = set(tables_on_this_page)
-        
+
     return tables
-
-
-def save_images_from_page(page: pdfminer.layout.LTPage, manual_name, manual_id):
-    images = list(filter(bool, map(get_image, page)))
-    iw = ImageWriter(f"./storage/{manual_name}/images/")
-    for image in images:
-        iw.export_image(image)
-
-
-def get_image(layout_object):
-    if isinstance(layout_object, pdfminer.layout.LTImage):
-        return layout_object
-    if isinstance(layout_object, pdfminer.layout.LTContainer):
-        for child in layout_object:
-            return get_image(child)
-    else:
-        return None
