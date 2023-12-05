@@ -14,12 +14,14 @@ import '@react-pdf-viewer/highlight/lib/styles/index.css';
 import '@react-pdf-viewer/search/lib/styles/index.css';
 import { NextIcon, PreviousIcon, SearchIcon } from '@react-pdf-viewer/search';
 
-export default function () {
-    const BACKEND_URL = process.env.BACKEND_URL;
+export default function AskQuestion({manual_id, manual_device, file_name}) {
+    const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
     const [question, setQuestion] = useState("")
     const [image, setImage] = useState(null)
     const [fix, setFix] = useState(null)
+    const [documentLoaded, setDocumentLoaded] = useState(false);
+    const [highlightKeyword, setHighlightKeyword] = useState("");
 
     const handleOnClick = async () => {
         if (!file.files[0]) {
@@ -29,13 +31,15 @@ export default function () {
             formData.append("file", file.files[0])
             setImage(URL.createObjectURL(file.files[0]))
 
-            const query_return = await fetch(`http://127.0.0.1:8000/query?id=401&qstring=${question}`, {
+            const query_return = await fetch(`${BACKEND_URL}/query?id=${manual_id}&qstring=${question}&device=${manual_device}`, {
                 method: 'POST',
                 body: formData,
             }).then(data => data.json())
 
-            setFix(query_return["result"])
             console.log(query_return)
+
+            setFix(query_return["result"])
+            setHighlightKeyword(query_return["query_documents"][0][0].split('|')[0])
         }
 
     }
@@ -66,14 +70,6 @@ export default function () {
 
 
 
-    // highlight([
-    //     'document',
-    //     {
-    //         keyword: 'PDF',
-    //         matchCase: true,
-    //     },
-    // ]);
-
     const defaultLayoutPluginInstance = defaultLayoutPlugin();
     const renderHighlights = (props) => (
         <div>
@@ -101,7 +97,6 @@ export default function () {
     const highlightPluginInstance = highlightPlugin({
         renderHighlights,
         trigger: Trigger.None,
-
     });
     const searchPluginInstance = searchPlugin({
         enableShortcuts: true,
@@ -109,19 +104,17 @@ export default function () {
 
     const { highlight } = searchPluginInstance;
 
-    const default_page = areas[0].pageIndex;
+    const default_page = 0;
 
-    const [isDocumentLoaded, setDocumentLoaded] = React.useState(false);
-    const handleDocumentLoad = () => setDocumentLoaded(true);
 
     useEffect(() => {
-        if (isDocumentLoaded) {
+        if (documentLoaded) {
             highlight({
-                keyword: `Will the following line of code compile`,
-                matchCase: true,
+                keyword: highlightKeyword,
+                matchCase: false,
             });
         }
-    }, [isDocumentLoaded]);
+    }, [highlightKeyword]);
 
     return (
         <div className="py-6 items-center justify-center" style={{ width: "100%", height: "100%" }}>
@@ -142,7 +135,7 @@ export default function () {
                                 onClick={handleOnClick}>SUBMIT
                             </Button>
                             {fix && <p style={{ backgroundColor: 'green' }}>{fix}</p>}
-                            {fix && <img src={image} />}
+                            {/* {fix && <img src={image} />} */}
                         </div>
                         <div className="flex flex-row">
                             <input id="file" type="file" placeholder='Choose Image' className="w-fit hover:cursor-pointer" />
@@ -155,11 +148,11 @@ export default function () {
                     <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
                         <div style={{ height: '750px' }}>
                             <Viewer
-                                onDocumentLoad={handleDocumentLoad}
-                                fileUrl="EECS_280.pdf"
+                                onDocumentLoad={() => setDocumentLoaded(true)}
+                                fileUrl={`./../${file_name}`}
                                 plugins={[
                                     defaultLayoutPluginInstance,
-                                    highlightPluginInstance,
+                                    // highlightPluginInstance,
                                     searchPluginInstance
                                 ]}
                                 initialPage={default_page}

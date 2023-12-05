@@ -19,6 +19,8 @@ import tabula
 import base64
 import requests
 
+BURN_MONEY = True
+
 chroma_client = chromadb.PersistentClient(path="./db/")
 chroma_client.heartbeat()
 # chroma_client = chromadb.Client()
@@ -47,7 +49,10 @@ async def back_and_forth(messages):
 
 
 @app.post("/query")
-async def query(id: str, qstring: str, file: UploadFile = File(...)):
+async def query(id: str, qstring: str, device: str, file: UploadFile = File(...)):
+    if not BURN_MONEY:
+        return {"result": "HAHAHHAHAHHAHAHAHAHA SAMPLE", "query_documents": ["Leaking water"]}
+    id = "man" + id
     OPEN_AI_KEY = os.environ["OPEN_AI_KEY"]
     collection = chroma_client.get_collection(id)
     results = collection.query(
@@ -70,10 +75,10 @@ async def query(id: str, qstring: str, file: UploadFile = File(...)):
         "messages": [
             {
                 "role": "system",
-                "content": f"You are a manufacturer's customer service agent helping a user troubleshoot an issue with their device."
+                "content": f"You are a manufacturer's customer service agent helping a user troubleshoot an issue with their {device}."
                 "You will be given a problem, and some semantically similar embeddings in the manual ranked by similiarities."
                 "You will also be given an image of their problem"
-                "Generate a response in less than three sentences to instruct the user what to do. BRIEFLY describe the image, DO NOT redirect them to get help from others or from sections in their manual.",
+                "Generate a response in less than three sentences to instruct the user what to do. DO NOT redirect them to get help from others or from sections in their manual.",
             },
             {
                 "role": "user",
@@ -85,7 +90,6 @@ async def query(id: str, qstring: str, file: UploadFile = File(...)):
                     "type": "image_url",
                     "image_url": {
                         "url": f"data:image/jpeg;base64,{base64_image}",
-                        "detail": "high",
                     },
                 }],
             },

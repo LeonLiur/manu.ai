@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import React, { useEffect, useState } from 'react'
+import QRCode from 'qrcode.react';
 
 
 export default function () {
@@ -24,7 +25,7 @@ export default function () {
             formData.append("file", file.files[0]);
             console.log(formData)
 
-            const add_to_db = await fetch(`/api/add_manual_to_db?company_name=${companyName}&product_name=${productName}&product_device=${productType}`, {
+            const add_to_db = await fetch(`/api/add_manual_to_db?company_name=${companyName}&product_name=${productName}&product_device=${productType}&file_name=${file.files[0].name}`, {
                 method: 'POST'
             }).then(data => data.json())
 
@@ -55,7 +56,10 @@ export default function () {
             </div>
             <Button onClick={handleFileUpload}>Upload</Button>
             {uploaded ?
-                <div style={{ backgroundColor: 'green' }}>YOUR KNOWLEDGEBASE IS READY AT <a href={availableURL}>{availableURL}</a>
+                <div>
+                    <div style={{ backgroundColor: 'green' }}>YOUR KNOWLEDGEBASE IS READY AT <a href={availableURL}>{availableURL}</a>
+                    </div>
+                    <QRCode value={availableURL}></QRCode>
                 </div>
                 :
                 <div style={{ backgroundColor: 'red' }}>NOT UPLOADED</div>

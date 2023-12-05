@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 import { createClient } from '@supabase/supabase-js'
 
 const supabaseUrl = 'https://rjdjndejomtwmwffjgxf.supabase.co'
-const supabaseKey = process.env["NEXT_PUBLIC_SUPABASE_KEY"]
+const supabaseKey = process.env["SUPABASE_KEY"]
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 
@@ -12,7 +12,7 @@ export async function POST(req) {
     const dbRes = await supabase
         .from('manuals')
         .insert([
-            { company_name: query.get("company_name"), product_name: query.get('product_name'), product_device: query.get('product_device') },
+            { company_name: query.get("company_name"), product_name: query.get('product_name'), product_device: query.get('product_device') , file_name: query.get('file_name')},
         ]).select()
 
     if(dbRes.error != null){
