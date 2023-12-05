@@ -1,5 +1,4 @@
 from typing import Union
-
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 import chromadb
@@ -17,7 +16,8 @@ from pdfminer.high_level import extract_text, extract_pages
 from pdfminer.image import ImageWriter
 from openai import OpenAI
 import tabula
-
+import base64
+import requests
 
 chroma_client = chromadb.PersistentClient(path="./db/")
 chroma_client.heartbeat()
@@ -46,8 +46,9 @@ async def back_and_forth(messages):
     return
 
 
-@app.get("/query")
-async def query(id: str, qstring: str):
+@app.post("/query")
+async def query(id: str, qstring: str, file: UploadFile = File(...)):
+    OPEN_AI_KEY = os.environ["OPEN_AI_KEY"]
     collection = chroma_client.get_collection(id)
     results = collection.query(
         query_texts=[qstring, "troubleshoot"],
@@ -57,25 +58,49 @@ async def query(id: str, qstring: str):
     result_distances = results["distances"]
     result_documents = results["documents"]
 
-    openai_client = OpenAI(api_key=os.environ["OPEN_AI_KEY"])
-    chat_completion = openai_client.chat.completions.create(
-        messages=[
+    base64_image = encode_image(file.file)
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {OPEN_AI_KEY}",
+    }
+
+    payload = {
+        "model": "gpt-4-vision-preview",
+        "messages": [
             {
                 "role": "system",
                 "content": f"You are a manufacturer's customer service agent helping a user troubleshoot an issue with their device."
                 "You will be given a problem, and some semantically similar embeddings in the manual ranked by similiarities."
-                "Generate a response in less than three sentences to help the user. DO NOT redirect them to get help from others.",
+                "You will also be given an image of their problem"
+                "Generate a response in less than three sentences to instruct the user what to do. BRIEFLY describe the image, DO NOT redirect them to get help from others or from sections in their manual.",
             },
             {
                 "role": "user",
                 "content": f"Help me: {qstring}, here are semantically similar embeddings ranked by similarity: {result_documents}",
             },
+            {
+                "role": "user",
+                "content": [{
+                    "type": "image_url",
+                    "image_url": {
+                        "url": f"data:image/jpeg;base64,{base64_image}",
+                        "detail": "high",
+                    },
+                }],
+            },
         ],
-        model="gpt-3.5-turbo-16k",
-    )
+        "max_tokens": 300,
+    }
+
+    response = requests.post(
+        "https://api.openai.com/v1/chat/completions", headers=headers, json=payload
+    ).json()
+    
+    print(response)
 
     return {
-        "result": chat_completion.choices[0].message.content,
+        "result": response["choices"][0]["message"]["content"],
         "query_documents": result_documents,
     }
 
@@ -85,9 +110,10 @@ async def upload_item(
     manual_id: str,
     manual_name: str,
     file: UploadFile = File(...),
-    chunk_size: int = 100,
+    chunk_size: int = 300,
     overlap: float = 0.3,
 ):
+    print("[+] received uploaded PDF")
     collection = chroma_client.get_or_create_collection(name=manual_id)
     running_id = 0
 
@@ -151,3 +177,8 @@ def handle_tables(pdf_in):
         tables[page] = set(tables_on_this_page)
 
     return tables
+
+
+# Function to encode the image
+def encode_image(image_file):
+    return base64.b64encode(image_file.read()).decode("utf-8")
