@@ -113,7 +113,10 @@ async def upload_item(
     chunk_size: int = 300,
     overlap: float = 0.3,
 ):
-    print("[+] received uploaded PDF")
+    # all ID must be above 3 characters long
+    manual_id = "man" + manual_id
+    
+    print(f"[+] received uploaded PDF with ID {manual_id}")
     collection = chroma_client.get_or_create_collection(name=manual_id)
     running_id = 0
 
