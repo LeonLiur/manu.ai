@@ -15,3 +15,13 @@ $ npm install
 $ cd backend
 $ pip install -r requirements.txt
 ```
+#### To run 
+Open two terminal windows for frontend and backend.
+```
+$ cd frontend
+$ npm run dev
+```
+```
+$ cd backend
+$ uvicorn main:app --reload
+```
