@@ -14,7 +14,7 @@ import '@react-pdf-viewer/highlight/lib/styles/index.css';
 import '@react-pdf-viewer/search/lib/styles/index.css';
 import { NextIcon, PreviousIcon, SearchIcon } from '@react-pdf-viewer/search';
 
-export default function AskQuestion({manual_id, manual_device, file_name}) {
+export default function AskQuestion({ manual_id, manual_device, file_url }) {
     const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
     const [question, setQuestion] = useState("")
@@ -23,24 +23,32 @@ export default function AskQuestion({manual_id, manual_device, file_name}) {
     const [documentLoaded, setDocumentLoaded] = useState(false);
     const [highlightKeyword, setHighlightKeyword] = useState("");
 
+    console.log(manual_id)
+
     const handleOnClick = async () => {
-        if (!file.files[0]) {
-            console.log("no file uploaded")
-        } else {
-            const formData = new FormData()
+        const formData = new FormData()
+        let query_return = null
+
+        if (file.files[0]) {
             formData.append("file", file.files[0])
             setImage(URL.createObjectURL(file.files[0]))
 
-            const query_return = await fetch(`${BACKEND_URL}/query?id=${manual_id}&qstring=${question}&device=${manual_device}`, {
+            query_return = await fetch(`${BACKEND_URL}/query?id=${manual_id}&qstring=${question}&device=${manual_device}`, {
                 method: 'POST',
-                body: formData,
+                body: file.files[0]
             }).then(data => data.json())
-
-            console.log(query_return)
-
-            setFix(query_return["result"])
-            setHighlightKeyword(query_return["query_documents"][0][0].split('|')[0])
+        } else {
+            query_return = await fetch(`${BACKEND_URL}/query?id=${manual_id}&qstring=${question}&device=${manual_device}`, {
+                method: 'POST',
+            }).then(data => data.json())
         }
+
+
+
+        console.log(query_return)
+
+        setFix(query_return["result"])
+        setHighlightKeyword(query_return["query_documents"][0][0].split('|')[0])
 
     }
 
@@ -144,22 +152,24 @@ export default function AskQuestion({manual_id, manual_device, file_name}) {
                     </div>
                 </div>
 
-                <div className="mx-10 px-10 mt-10">
-                    <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
-                        <div style={{ height: '750px' }}>
-                            <Viewer
-                                onDocumentLoad={() => setDocumentLoaded(true)}
-                                fileUrl={`./../${file_name}`}
-                                plugins={[
-                                    defaultLayoutPluginInstance,
-                                    // highlightPluginInstance,
-                                    searchPluginInstance
-                                ]}
-                                initialPage={default_page}
-                            />
-                        </div>
-                    </Worker>
-                </div>
+                {file_url &&
+                    <div className="mx-10 px-10 mt-10">
+                        <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+                            <div style={{ height: '750px' }}>
+                                <Viewer
+                                    onDocumentLoad={() => setDocumentLoaded(true)}
+                                    fileUrl={file_url ? file_url : "../blank_pdf.pdf"}
+                                    plugins={[
+                                        defaultLayoutPluginInstance,
+                                        // highlightPluginInstance,
+                                        searchPluginInstance
+                                    ]}
+                                    initialPage={default_page}
+                                />
+                            </div>
+                        </Worker>
+                    </div>
+                }
             </div>
 
         </div>

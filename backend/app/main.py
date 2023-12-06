@@ -17,7 +17,11 @@ from pdfminer.image import ImageWriter
 from openai import OpenAI
 import tabula
 import base64
+import io
 import requests
+import logging
+import boto3
+from botocore.exceptions import ClientError
 
 BURN_MONEY = True
 
@@ -43,15 +47,15 @@ def read_root():
     return {"Hello": "World"}
 
 
-@app.get("/back_and_forth")
-async def back_and_forth(messages):
-    return
-
-
 @app.post("/query")
-async def query(id: str, qstring: str, device: str, file: UploadFile = File(...)):
+async def query(
+    id: str, qstring: str, device: str, file: Union[UploadFile, None] = None
+):
     if not BURN_MONEY:
-        return {"result": "HAHAHHAHAHHAHAHAHAHA SAMPLE", "query_documents": ["Leaking water"]}
+        return {
+            "result": "HAHAHHAHAHHAHAHAHAHA SAMPLE",
+            "query_documents": ["Leaking water"],
+        }
     id = "man" + id
     OPEN_AI_KEY = os.environ["OPEN_AI_KEY"]
     collection = chroma_client.get_collection(id)
@@ -63,7 +67,8 @@ async def query(id: str, qstring: str, device: str, file: UploadFile = File(...)
     result_distances = results["distances"]
     result_documents = results["documents"]
 
-    base64_image = encode_image(file.file)
+    if file:
+        base64_image = encode_image(file.file)
 
     headers = {
         "Content-Type": "application/json",
@@ -71,7 +76,7 @@ async def query(id: str, qstring: str, device: str, file: UploadFile = File(...)
     }
 
     payload = {
-        "model": "gpt-4-vision-preview",
+        "model": "gpt-4-vision-preview" if file else "gpt-4",
         "messages": [
             {
                 "role": "system",
@@ -83,25 +88,27 @@ async def query(id: str, qstring: str, device: str, file: UploadFile = File(...)
             {
                 "role": "user",
                 "content": f"Help me: {qstring}, here are semantically similar embeddings ranked by similarity: {result_documents}",
-            },
-            {
-                "role": "user",
-                "content": [{
-                    "type": "image_url",
-                    "image_url": {
-                        "url": f"data:image/jpeg;base64,{base64_image}",
-                    },
-                }],
-            },
+            }
         ],
         "max_tokens": 300,
     }
+    
+    if file:
+        payload.messages.append({
+                "role": "user",
+                "content": [
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": f"data:image/jpeg;base64,{base64_image}",
+                        },
+                    }
+                ],
+            },)
 
     response = requests.post(
         "https://api.openai.com/v1/chat/completions", headers=headers, json=payload
     ).json()
-    
-    print(response)
 
     return {
         "result": response["choices"][0]["message"]["content"],
@@ -119,12 +126,12 @@ async def upload_item(
 ):
     # all ID must be above 3 characters long
     manual_id = "man" + manual_id
-    
+
     print(f"[+] received uploaded PDF with ID {manual_id}")
     collection = chroma_client.get_or_create_collection(name=manual_id)
     running_id = 0
 
-    text, tables = handle_pdf(file.file, manual_name, manual_id)
+    text, tables = handle_pdf(file, manual_name, manual_id)
 
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=chunk_size,
@@ -155,21 +162,37 @@ async def upload_item(
     return {"status": 200, "chunks": chunks, "tables": tables}
 
 
-def handle_pdf(pdf_in, manual_name, manual_id):
-    text = extract_text(pdf_in)
-    # os.makedirs(f"./storage/{manual_name}", exist_ok=True)
-    # with open(f"./storage/{manual_name}/text.txt", "w") as f:
-    #     f.write(text)
+@app.get("/file")
+def get_file(file_name: str, expiration: int = 3600):
+    s3_client = boto3.client("s3")
+    try:
+        response = s3_client.generate_presigned_url(
+            "get_object",
+            Params={"Bucket": os.environ["BUCKET_NAME"], "Key": file_name},
+            ExpiresIn=expiration,
+        )
+    except ClientError as e:
+        logging.error(e)
+        return None
 
-    # for page in tqdm(extract_pages(pdf_in)):
-    #     save_images_from_page(page, manual_name, manual_id)
-    tables = handle_tables(pdf_in)
+    # The response contains the presigned URL
+    return response
+
+
+def handle_pdf(file, manual_name, manual_id):
+    if not upload_file_s3(file, os.environ["BUCKET_NAME"]):
+        print("[-] FAILED TO UPLOAD TO S3")
+    else:
+        print("[+] uploaded to S3")
+    print("[*] processing text")
+    text = extract_text(file.file)
+    print("[*] processing tables")
+    tables = handle_tables(file.file)
     return text, tables
 
 
 def handle_tables(pdf_in):
     length = len(pypdf.PdfReader(pdf_in).pages)
-    print("doing tables")
     tables = {}
     for page in tqdm(range(1, length + 1)):
         dfs = tabula.read_pdf(pdf_in, pages=str(page))
@@ -189,3 +212,27 @@ def handle_tables(pdf_in):
 # Function to encode the image
 def encode_image(image_file):
     return base64.b64encode(image_file.read()).decode("utf-8")
+
+
+def upload_file_s3(file, bucket):
+    """Upload a file to an S3 bucket
+
+    :param file_name: File to upload
+    :param bucket: Bucket to upload to
+    :param object_name: S3 object name. If not specified then file_name is used
+    :return: True if file was uploaded, else False
+    """
+
+    # Upload the file
+    s3_client = boto3.client("s3")
+    try:
+        contents = file.file.read()
+        temp_file = io.BytesIO()
+        temp_file.write(contents)
+        temp_file.seek(0)
+        s3_client.upload_fileobj(temp_file, bucket, file.filename)
+        temp_file.close()
+    except ClientError as e:
+        logging.error(e)
+        return False
+    return True

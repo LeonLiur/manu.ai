@@ -21,13 +21,19 @@ export async function generateStaticParams() {
 
 export default async function Page({ params }) {
     const manualEntry = await getManualEntry(params.company, params.product)
+    let url = null
+    if (manualEntry != null) {
+        url = await fetch(`${process.env['NEXT_PUBLIC_BACKEND_URL']}/file?file_name=${manualEntry.file_name}`, {
+            method: 'GET',
+        }).then(data => data.json())
+    }
 
     return <>
         {manualEntry &&
             <div>
                 <p>Manual ID: {manualEntry.manual_id}</p>
                 <p>Manual Name: {manualEntry.product_name}</p>
-                <Ask_Question manual_id={manualEntry.manual_id} manual_device={manualEntry.product_device} file_name={manualEntry.file_name}/>
+                <Ask_Question manual_id={manualEntry.manual_id} manual_device={manualEntry.product_device} file_name={url} />
             </div>
         }
     </>
