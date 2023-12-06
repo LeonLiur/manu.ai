@@ -1,6 +1,6 @@
 import { DropdownMenuIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
-import Select from "react-Select";
+import Select from "react-select";
 
 
 const options = [
@@ -16,15 +16,12 @@ export default function SearchableDropdown(){
     };
 
     return(
-        <>
-            <div className="flex flex-row justify-items-center justify-center">
-                <Select 
-                    options={options}
-                    onChange={handleChange}
-                    value={selectedOption}
-                >
-                </Select>  
-            </div>
-        </>
+        <Select 
+            className="basic-single"
+            classNamePrefix="select"
+            options={options}
+            onChange={handleChange}
+            value={selectedOption}
+        / > 
     );
 }
