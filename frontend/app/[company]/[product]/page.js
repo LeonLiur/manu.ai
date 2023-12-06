@@ -6,17 +6,17 @@ const supabaseKey = process.env["SUPABASE_KEY"]
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 
-// // Generate segments for both [company] and [product]
-// export async function generateStaticParams() {
-//     const dbRes = await supabase
-//         .from('manuals')
-//         .select("*")
+// Generate segments for both [company] and [product]
+export async function generateStaticParams() {
+    const dbRes = await supabase
+        .from('manuals')
+        .select("*")
 
-//     return dbRes.data.map((manual) => ({
-//         company: manual.company_name,
-//         product: manual.product_name,
-//     }))
-// }
+    return dbRes.data.map((manual) => ({
+        company: manual.company_name,
+        product: manual.product_name,
+    }))
+}
 
 
 export default async function Page({ params }) {
@@ -39,7 +39,7 @@ export default async function Page({ params }) {
 async function getManualEntry(companyName, productName) {
     const dbRes = await supabase
         .from('manuals')
-        .select("*")
+        .select('[file_name, company_name, product_name, product_type]')
         .eq('company_name', companyName)
         .eq('product_name', productName)
         .limit(1)

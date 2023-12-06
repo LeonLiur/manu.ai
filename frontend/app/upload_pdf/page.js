@@ -62,7 +62,7 @@ export default function () {
                         <p className="font-semibold mb-2">Company Name</p>
                         <input className="w-full rounded-md border-0 bg-white/5 px-3.5 py-2 text-gray-100 font-sm shadow-sm ring-1 ring-inset ring-white/10 focus:ring-1 focus:ring-inset sm:text-sm sm:leading-6 hover:ring-gray-600"
                         placeholder='Ex: Samsung'
-                        onChange={(e) => { setCompanyName(e.target.value) }} />
+                        onChange={(e) => { setCompanyName(e.target.value.toLowerCase()) }} />
                     </div>
                     <div>
                         <p className="font-semibold mb-2">Product Type</p>

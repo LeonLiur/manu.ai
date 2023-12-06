@@ -46,7 +46,7 @@ app.add_middleware(
 @app.middleware("http")
 async def add_no_cache_header(request, call_next):
     response = await call_next(request)
-    response.headers["Cache-Control"] = "public, max-age=1800"
+    response.headers["Cache-Control"] = "public, max-age=5"
     return response
 
 
@@ -173,13 +173,14 @@ async def upload_item(
 
 @app.get("/file")
 def get_file_link(file_name: str, expiration: int = 3600):
+    print("[*] Generating presigned link for", file_name)
     try:
         response = s3_client.generate_presigned_url(
             "get_object",
             Params={"Bucket": os.environ["BUCKET_NAME"], "Key": file_name},
             ExpiresIn=expiration,
         )
-        print("[+] Generated presigned link:")
+        print("[+] Generated presigned link", response)
     except ClientError as e:
         logging.error(e)
         return None
