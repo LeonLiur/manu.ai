@@ -21,6 +21,7 @@ import io
 import requests
 import logging
 import boto3
+import random
 from botocore.exceptions import ClientError
 
 BURN_MONEY = True
@@ -28,6 +29,7 @@ BURN_MONEY = True
 chroma_client = chromadb.PersistentClient(path="./db/")
 chroma_client.heartbeat()
 # chroma_client = chromadb.Client()
+s3_client = boto3.client("s3")
 load_dotenv()
 app = FastAPI()
 
@@ -41,10 +43,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.middleware("http")
+async def add_no_cache_header(request, call_next):
+    response = await call_next(request)
+    response.headers["Cache-Control"] = "public, max-age=1800"
+    return response
+
+
 
 @app.get("/")
 def read_root():
-    return {"Hello": "World"}
+    return {"Hello": "World", "Roulette" : random.randint(1, 6)}
 
 
 @app.post("/query")
@@ -163,14 +172,14 @@ async def upload_item(
 
 
 @app.get("/file")
-def get_file(file_name: str, expiration: int = 3600):
-    s3_client = boto3.client("s3")
+def get_file_link(file_name: str, expiration: int = 3600):
     try:
         response = s3_client.generate_presigned_url(
             "get_object",
             Params={"Bucket": os.environ["BUCKET_NAME"], "Key": file_name},
             ExpiresIn=expiration,
         )
+        print("[+] Generated presigned link:")
     except ClientError as e:
         logging.error(e)
         return None

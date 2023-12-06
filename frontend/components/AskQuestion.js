@@ -23,8 +23,6 @@ export default function AskQuestion({ manual_id, manual_device, file_url }) {
     const [documentLoaded, setDocumentLoaded] = useState(false);
     const [highlightKeyword, setHighlightKeyword] = useState("");
 
-    console.log(manual_id)
-
     const handleOnClick = async () => {
         const formData = new FormData()
         let query_return = null
