@@ -5,7 +5,7 @@ import InputBox from "../components/ui/InputBox";
 import ButtonIcon from "@/components/ui/ButtonIcon";
 import SearchableDropdown from "@/components/ui/SeachableDropdown";
 import { Button } from "@/components/ui/button";
-import ChatBot from "@/components/ui/chatBot";
+//import ChatBot from "@/components/ui/chatBot";
 import { StatDownArrow } from "@chakra-ui/react";
 import { ArrowDownNarrowWideIcon, ArrowDownRightSquare } from "lucide-react";
 import { useState } from "react";
@@ -26,7 +26,7 @@ const Home = () => {
           <div className="flex flex-grow"></div>
         </div>
         <div className="flex flex-col h-full mt-20" style={{padding: "20px", width: "100%"}}>
-            <ChatBot  />
+            {/* <ChatBot  /> */}
             {/* <div className="p-4" style={{padding: "25px"}}>
               <h1 className="text-5xl bg-gradient-to-bl text-center font-bold leading-5">
                 Ask 

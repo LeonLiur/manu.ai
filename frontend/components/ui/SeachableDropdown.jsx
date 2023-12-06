@@ -1,5 +1,5 @@
 import { DropdownMenuIcon } from "@radix-ui/react-icons";
-import { useState } from "react";
+import { useId, useState } from "react";
 import Select from "react-select";
 
 
@@ -20,6 +20,7 @@ export default function SearchableDropdown(){
             className="basic-single"
             classNamePrefix="select"
             options={options}
+            instanceId={useId()}
             onChange={handleChange}
             value={selectedOption}
         / > 

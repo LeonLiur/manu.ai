@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import ButtonIcon from "./ButtonIcon";
-import axios from "axios";
+//import axios from "axios";
 
 export default function ChatBot() {
 
