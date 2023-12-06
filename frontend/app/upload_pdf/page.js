@@ -50,18 +50,21 @@ export default function () {
                     <input id="file" type="file" />
                     <div>
                         <p className="font-semibold mb-2">Manual Name</p>
-                        <input className="w-full rounded-md border-0 bg-white/5 px-3.5 py-2 text-gray-100 font-sm shadow-sm ring-1 ring-inset ring-white/10 focus:ring-1 focus:ring-inset sm:text-sm sm:leading-6"
+                        <input className="w-full rounded-md border-0 bg-white/5 px-3.5 py-2 text-gray-100 font-sm shadow-sm ring-1 ring-inset ring-white/10 focus:ring-1 focus:ring-inset sm:text-sm sm:leading-6 hover:ring-gray-600"
+                        placeholder='Ex: Samsung Spin Cycle 3000'
                         onChange={(e) => { setproductName(e.target.value) }} />
                     </div>
                     <div>
                         <p className="font-semibold mb-2">Company Name</p>
-                        <input className="w-full rounded-md border-0 bg-white/5 px-3.5 py-2 text-gray-100 font-sm shadow-sm ring-1 ring-inset ring-white/10 focus:ring-1 focus:ring-inset sm:text-sm sm:leading-6"
+                        <input className="w-full rounded-md border-0 bg-white/5 px-3.5 py-2 text-gray-100 font-sm shadow-sm ring-1 ring-inset ring-white/10 focus:ring-1 focus:ring-inset sm:text-sm sm:leading-6 hover:ring-gray-600"
+                        placeholder='Ex: Samsung'
                         onChange={(e) => { setCompanyName(e.target.value) }} />
                     </div>
                     <div>
                         <p className="font-semibold mb-2">Product Type</p>
-                        <select className="w-full rounded-md border-0 bg-white/5 pl-2 pr-3 py-2 text-gray-100 font-sm shadow-sm ring-1 ring-inset ring-white/10 focus:ring-1 focus:ring-inset sm:text-sm sm:leading-6"
+                        <select className="w-full rounded-md border-0 bg-white/5 pl-2 pr-3 py-2 text-gray-100 font-sm shadow-sm ring-1 ring-inset ring-white/10 focus:ring-1 focus:ring-inset sm:text-sm sm:leading-6 hover:ring-gray-600 "
                         onChange={(e) => { setProductType(e.target.value) }}>
+                            <option className="text-gray-300" value="" disabled selected>Select your option</option>
                             <option value="dishwasher">Dishwasher</option>
                             <option value="washing machine">Washing Machine</option>
                             <option value="fridge">Refridgerator</option>
@@ -79,7 +82,7 @@ export default function () {
                             <option value="electric kettle">Electric Kettle</option>
                         </select>
                     </div>
-                    <Button onClick={handleFileUpload}>Upload</Button>
+                    <Button className="hover:bg-slate-500" onClick={handleFileUpload}>Upload</Button>
                     {uploaded ?
                         <div className="flex items-center gap-4">
                             <div id="circle-indicator" className="w-4 h-4 bg-green-500 rounded-full"></div>
