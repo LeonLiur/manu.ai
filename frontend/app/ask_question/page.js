@@ -20,8 +20,12 @@ export default function () {
     const [question, setQuestion] = useState("")
     const [image, setImage] = useState(null)
     const [fix, setFix] = useState(null)
+    const [showQuery, setShowQuery] = useState(true)
 
     const handleOnClick = async () => {
+
+        document.getElementById("query").innerHTML.append("disabled");
+        setShowQuery(false);
         if (!file.files[0]) {
             console.log("no file uploaded")
         } else {
@@ -112,12 +116,12 @@ export default function () {
     const default_page = areas[0].pageIndex;
     
     const [isDocumentLoaded, setDocumentLoaded] = React.useState(false);
-    const handleDocumentLoad = () => setDocumentLoaded(true);
+    const handleDocumentLoad = (key) => setDocumentLoaded(true);
 
-    React.useEffect(() => {
+    React.useEffect((key) => {
         if (isDocumentLoaded) {
             highlight({
-                keyword: `Will the following line of code compile`,
+                keyword: {key},
                 matchCase: true,
             });
         }
@@ -132,18 +136,21 @@ export default function () {
                 
                 <div className="px-10">
                     <div className="flex flex-col gap-2">
-                        <div className='flex flex-row'>
-                        <input 
-                            className="min-w-0 flex-auto mr-2 rounded-md border-0 bg-white/5 px-3.5 py-2 text-white font-medium shadow-sm ring-1 ring-inset ring-white/10 focus:ring-1 focus:ring-inset sm:text-sm sm:leading-6 "
-                            name="question" id="question" placeholder="My dishwasher won't turn on" onChange={(e) => setQuestion(e.target.value)}>
-                        </input>
-                        <Button 
-                            className="hover:bg-slate-700 active:scale-105 transition-transform duration-100"
-                            onClick={handleOnClick}>SUBMIT
-                        </Button>
-                        {fix && <p style={{backgroundColor:'green'}}>{fix}</p>}
-                        {fix && <img src={image}/>}
-                        </div>
+                        <form className='flex flex-row' onSubmit={handleOnClick}>
+                            <input 
+                                id="question"
+                                className="min-w-0 flex-auto mr-2 rounded-md border-0 bg-white/5 px-3.5 py-2 text-white font-medium shadow-sm ring-1 ring-inset ring-white/10 focus:ring-1 focus:ring-inset sm:text-sm sm:leading-6 placeholder:text-gray-500 "
+                                name="question" placeholder="Ex: my dishwasher won't turn on" onChange={(e) => setQuestion(e.target.value)}
+                                autoComplete='false'>
+                            </input>
+                            <Button 
+                                className="hover:bg-slate-700 active:scale-105 transition-transform duration-100"
+                                onClick={handleOnClick}>SUBMIT
+                            </Button>
+                        </form>
+                        
+                        {showQuery && fix && <p style={{backgroundColor:'green'}}>{fix}</p>}
+                        {showQuery && fix && <img src={image}/>}
                         <div className="flex flex-row">
                             <input id="file" type="file" placeholder='Choose Image' className="w-fit hover:cursor-pointer" />
                             <div className="flex flex-grow"></div>
@@ -151,11 +158,12 @@ export default function () {
                     </div>
                 </div>
                 
-                <div className="mx-10 px-10 mt-10">
+                
+                {fix ? <> </> : <div className="mx-10 px-10 mt-10">
                     <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
                     <div style={{ height: '750px' }}>
                         <Viewer
-                            onDocumentLoad={handleDocumentLoad}
+                            onDocumentLoad={handleDocumentLoad(fix)}
                             fileUrl="EECS_280.pdf"
                             plugins={[
                                 defaultLayoutPluginInstance,
@@ -167,6 +175,7 @@ export default function () {
                     </div>
                     </Worker>
                 </div>
+                }
             </div>
             
         </div>
