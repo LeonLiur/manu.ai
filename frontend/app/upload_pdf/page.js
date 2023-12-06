@@ -41,7 +41,6 @@ export default function () {
             console.log("Uploading file...");
             const formData = new FormData();
             formData.append("file", file.files[0]);
-            console.log(formData)
 
             const add_to_db = await fetch(`/api/add_manual_to_db?company_name=${companyName}&product_name=${productName}&product_device=${productType}&file_name=${file.files[0].name}`, {
                 method: 'POST'
