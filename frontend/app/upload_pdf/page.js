@@ -45,8 +45,12 @@ export default function () {
                 <a href="" className="text-3xl font-bold">Manu.ai</a>
             </div>
             <div className="flex mt-10 w-[700] min-w-[400] justify-center items-center">
-                <div className="flex flex-col p-10 border-2 rounded-md shadow-md gap-4">
-                    <h1 className="text-3xl font-bold mb-10">Upload PDF</h1>
+                <div className="flex flex-col p-10 border-2 border-gray-600 rounded-md shadow-md shadow-slate-900 gap-4">
+                    
+                    <div className="flex flex-col justify-center">
+                        <p className="self-center h-12 w-12 text-3xl">📋</p>
+                        <h1 className="self-center text-3xl font-bold mb-10">Upload PDF</h1>
+                    </div>
                     <input id="file" type="file" />
                     <div>
                         <p className="font-semibold mb-2">Manual Name</p>
