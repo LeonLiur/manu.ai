@@ -162,8 +162,9 @@ export default function AskQuestion({ manual_id, manual_device, file_url, manual
                             <div className="flex flex-grow"></div>
                         </div>
                     </div>
-                    <p className="rounded-sm bg-green-100 border-green-600 border-2 border-dotted text-green-900 text-medium my-4 px-2 py-2 ">hello</p>
-                    {fix && <p className="rounded-sm bg-green-200 border-green-400 text-green-800 text-sm">{fix}</p>}
+                    {/* <p className="rounded-sm bg-green-100 border-green-600 border-2 border-dotted text-green-900 text-medium my-4 px-2 py-2 ">
+                    If your Whirlpool dishwasher is leaking, start by inspecting the door seal for any obstructions or damage. Ensure the dishwasher is level, as an uneven position can cause leaks. Check the door latch for proper operation and inspect all hoses and connections for signs of leakage. Overuse of detergent can lead to over-sudsing, which might cause leaks. Also, examine the float assembly and the water inlet valve to ensure they are functioning correctly. If these steps don't resolve the issue or if you notice significant damage, consider contacting a professional for repair.</p> */}
+                    {fix && <p cclassName="rounded-sm bg-green-100 border-green-600 border-2 border-dotted text-green-900 text-medium my-4 px-2 py-2">{fix}</p>}
                 </div>
                 
                
