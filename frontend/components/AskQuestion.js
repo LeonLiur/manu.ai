@@ -14,7 +14,7 @@ import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 import '@react-pdf-viewer/highlight/lib/styles/index.css';
 import '@react-pdf-viewer/search/lib/styles/index.css';
 import { NextIcon, PreviousIcon, SearchIcon } from '@react-pdf-viewer/search';
-import { ArrowDownRight, LucideArrowLeftRight } from 'lucide-react';
+import { ArrowDownRight, Camera, CameraIcon, LucideArrowLeftRight } from 'lucide-react';
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
 
 export default function AskQuestion({ manual_id, manual_device, file_url, manual_name}) {
@@ -149,16 +149,21 @@ export default function AskQuestion({ manual_id, manual_device, file_url, manual
                 </div>
                 <div className="px-20">
                     <div className="flex flex-col gap-2">
-                        <div className='flex flex-row '>
-                            <input
-                                className="min-w-0 flex-auto mr-2 rounded-md border-0 bg-white/5 px-3.5 py-2 text-white font-medium shadow-sm ring-1 ring-inset ring-white/10 focus:ring-1 focus:ring-inset sm:text-sm sm:leading-6 "
-                                name="question" id="question" placeholder="My dishwasher won't turn on" onChange={(e) => setQuestion(e.target.value)}>
-                            </input>
+                        <div className='flex'>
+                            <div className="relative w-full mr-2">
+                                <input
+                                    className="min-w-0 w-full mr-2 rounded-md border-0 bg-white/5 px-3.5 py-2 text-white font-medium shadow-sm ring-1 ring-inset ring-white/10 focus:ring-1 focus:ring-inset sm:text-sm sm:leading-6 "
+                                    name="question" id="question" placeholder="My dishwasher won't turn on" onChange={(e) => setQuestion(e.target.value)}>
+                                </input>
+                                <button className='absolute right-0 top-0 px-3 py-2'>
+                                    <CameraIcon></CameraIcon>
+                                </button>
+                            </div>
                             <Button
                                 className="hover:bg-slate-700 active:scale-105 transition-transform duration-100"
                                 onClick={handleOnClick}>SUBMIT
                             </Button>
-                            {/* {fix && <img src={image} />} */}
+                            
                         </div>
                         <div className="flex flex-row">
                             <input id="file" type="file" placeholder='Choose Image' className="w-fit hover:cursor-pointer" />
@@ -167,7 +172,17 @@ export default function AskQuestion({ manual_id, manual_device, file_url, manual
                     </div>
                     {/* <p className="rounded-sm bg-green-100 border-green-600 border-2 border-dotted text-green-900 text-medium my-4 px-2 py-2 ">
                     If your Whirlpool dishwasher is leaking, start by inspecting the door seal for any obstructions or damage. Ensure the dishwasher is level, as an uneven position can cause leaks. Check the door latch for proper operation and inspect all hoses and connections for signs of leakage. Overuse of detergent can lead to over-sudsing, which might cause leaks. Also, examine the float assembly and the water inlet valve to ensure they are functioning correctly. If these steps don't resolve the issue or if you notice significant damage, consider contacting a professional for repair.</p> */}
-                    {fix && <p cclassName="rounded-sm bg-green-100 border-green-600 border-2 border-dotted text-green-900 text-medium my-4 px-2 py-2">{fix}</p>}
+                    {fix && 
+                        <div className='container items-center flex gap-2 rounded-sm bg-green-100 border-green-600 border-2 border-dotted text-green-900 text-medium my-4 px-2 py-2'>
+                            
+                            {fix && 
+                                <div className="max-w-1/2">
+                                     <img className="rounded-md" src={image} />
+                                </div>
+                            }
+                            <p className="min-w-1/2">{fix}</p>
+                        </div>
+                    }
                 </div>
                 
                
