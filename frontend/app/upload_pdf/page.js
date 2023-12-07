@@ -20,6 +20,8 @@ export default function () {
         if (!file.files[0]) {
             console.log("No file selected")
         } else {
+            document.getElementById("upload").classList.add("animate-pulse")
+            document.getElementById("upload").setAttribute("disabled", "true")
             console.log("Uploading file...");
             const formData = new FormData();
             formData.append("file", file.files[0]);
@@ -36,6 +38,9 @@ export default function () {
 
 
             setUploaded(uploadRes.status == 200)
+            document.getElementById("upload").setAttribute("disabled", "false")
+            document.getElementById("upload").classList.remove("animate-pulse")
+            document.getElementById("upload").value = "Uploaded"
         }
     }
 
@@ -86,7 +91,7 @@ export default function () {
                             <option value="electric kettle">Electric Kettle</option>
                         </select>
                     </div>
-                    <Button className="hover:bg-slate-500" onClick={handleFileUpload}>Upload</Button>
+                    <Button id="upload" className="hover:bg-slate-500" onClick={handleFileUpload}>Upload</Button>
                     {uploaded ?
                         <div className="flex items-center gap-4">
                             <div id="circle-indicator" className="w-4 h-4 bg-green-500 rounded-full"></div>

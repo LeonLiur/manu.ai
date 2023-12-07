@@ -30,6 +30,9 @@ export default function AskQuestion({ manual_id, manual_device, file_url, manual
         const formData = new FormData()
         let query_return = null
 
+        //set button loading
+        document.getElementById("");
+
         if (file.files[0]) {
             formData.append("file", file.files[0])
             setImage(URL.createObjectURL(file.files[0]))
