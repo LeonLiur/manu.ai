@@ -7,14 +7,17 @@ import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 import { highlightPlugin, Trigger } from '@react-pdf-viewer/highlight';
 import { HighlightArea, RenderHighlightsProps } from '@react-pdf-viewer/highlight';
 import { searchPlugin } from '@react-pdf-viewer/search';
+import { StatDownArrow } from "@chakra-ui/react";
 
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 import '@react-pdf-viewer/highlight/lib/styles/index.css';
 import '@react-pdf-viewer/search/lib/styles/index.css';
 import { NextIcon, PreviousIcon, SearchIcon } from '@react-pdf-viewer/search';
+import { ArrowDownRight, LucideArrowLeftRight } from 'lucide-react';
+import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
 
-export default function AskQuestion({ manual_id, manual_device, file_url }) {
+export default function AskQuestion({ manual_id, manual_device, file_url, manual_name}) {
     const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
     const [question, setQuestion] = useState("")
@@ -128,10 +131,22 @@ export default function AskQuestion({ manual_id, manual_device, file_url }) {
                 <a href="" className="text-3xl font-bold">Manu.ai</a>
             </div>
             <div className="flex flex-col h-full mt-10" style={{ padding: "20px", width: "100%" }}>
-
-                <div className="px-10">
+                <h1 className="text-5xl font-bold self-center mb-2">Ask Away</h1>
+                <div className="flex w-full justify-center mb-5 justify-items-center gap-2">
+                    <div className="flex flex-grow"></div>
+                    <a className="text-sm flex w-fit bg-slate-700 border-slate-400 border-2 pr-3 pl-2 rounded-full items-center hover:bg-slate-500 hover:border-b-slate-400">
+                        <ArrowDownRight className="h-4 w-4 mr-3" />
+                        Manual: {manual_name}
+                    </a>
+                    <a className="text-sm flex w-fit bg-slate-700 border-slate-400 border-2 pr-3 pl-2 rounded-full items-center hover:bg-slate-500 hover:border-b-slate-400">
+                        <MagnifyingGlassIcon className="h-4 w-4 mr-3" />
+                        ID: {manual_id}
+                    </a>
+                    <div className="flex flex-grow"></div>
+                </div>
+                <div className="px-20">
                     <div className="flex flex-col gap-2">
-                        <div className='flex flex-row'>
+                        <div className='flex flex-row '>
                             <input
                                 className="min-w-0 flex-auto mr-2 rounded-md border-0 bg-white/5 px-3.5 py-2 text-white font-medium shadow-sm ring-1 ring-inset ring-white/10 focus:ring-1 focus:ring-inset sm:text-sm sm:leading-6 "
                                 name="question" id="question" placeholder="My dishwasher won't turn on" onChange={(e) => setQuestion(e.target.value)}>
@@ -140,7 +155,6 @@ export default function AskQuestion({ manual_id, manual_device, file_url }) {
                                 className="hover:bg-slate-700 active:scale-105 transition-transform duration-100"
                                 onClick={handleOnClick}>SUBMIT
                             </Button>
-                            {fix && <p style={{ backgroundColor: 'green' }}>{fix}</p>}
                             {/* {fix && <img src={image} />} */}
                         </div>
                         <div className="flex flex-row">
@@ -148,10 +162,14 @@ export default function AskQuestion({ manual_id, manual_device, file_url }) {
                             <div className="flex flex-grow"></div>
                         </div>
                     </div>
+                    <p className="rounded-sm bg-green-100 border-green-600 border-2 border-dotted text-green-900 text-medium my-4 px-2 py-2 ">hello</p>
+                    {fix && <p className="rounded-sm bg-green-200 border-green-400 text-green-800 text-sm">{fix}</p>}
                 </div>
+                
+               
 
                 {file_url &&
-                    <div className="mx-10 px-10 mt-10">
+                    <div className="mx-10 px-10 mt-6">
                         <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
                             <div style={{ height: '750px' }}>
                                 <Viewer

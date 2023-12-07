@@ -26,9 +26,7 @@ export default async function Page({ params }) {
         {manualEntry &&
             manualEntry.valid ?
             <div>
-                <p>Manual ID: {manualEntry.manual_id}</p>
-                <p>Manual Name: {manualEntry.product_name}</p>
-                <Ask_Question manual_id={manualEntry.manual_id} manual_device={manualEntry.product_device} file_url={manualEntry.url} />
+                <Ask_Question manual_id={manualEntry.manual_id} manual_device={manualEntry.product_device} file_url={manualEntry.url} manual_name = {manualEntry.product_name} />
             </div> :
             <div>404</div>
         }
