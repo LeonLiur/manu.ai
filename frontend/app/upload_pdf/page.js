@@ -20,6 +20,10 @@ export default function () {
         if (!file.files[0]) {
             console.log("No file selected")
         } else {
+            document.getElementById("upload").classList.add("animate-pulse");
+            document.getElementById("upload").classList.add("duration-100");
+            document.getElementById("upload").setAttribute("disabled", "true");
+            document.getElementById("upload").innerHTML = "Uploading...";
             console.log("Uploading file...");
             const formData = new FormData();
             formData.append("file", file.files[0]);
@@ -36,6 +40,12 @@ export default function () {
 
 
             setUploaded(uploadRes.status == 200)
+            document.getElementById("upload").classList.remove("animate-pulse")
+            document.getElementById("upload").innerHTML = "Uploaded"
+            document.getElementById("file").value = "";
+            document.getElementById("manualname").value = "";
+            document.getElementById("companyname").value ="";
+            document.getElementById("select").value ="";
         }
     }
 
@@ -54,19 +64,19 @@ export default function () {
                     <input id="file" type="file" />
                     <div>
                         <p className="font-semibold mb-2">Manual Name</p>
-                        <input className="w-full rounded-md border-0 bg-white/5 px-3.5 py-2 text-gray-100 font-sm shadow-sm ring-1 ring-inset ring-white/10 focus:ring-1 focus:ring-inset sm:text-sm sm:leading-6 hover:ring-gray-600"
+                        <input id="manualname" className="w-full rounded-md border-0 bg-white/5 px-3.5 py-2 text-gray-100 font-sm shadow-sm ring-1 ring-inset ring-white/10 focus:ring-1 focus:ring-inset sm:text-sm sm:leading-6 hover:ring-gray-600"
                         placeholder='Ex: Samsung Spin Cycle 3000'
                         onChange={(e) => { setproductName(e.target.value) }} />
                     </div>
                     <div>
                         <p className="font-semibold mb-2">Company Name</p>
-                        <input className="w-full rounded-md border-0 bg-white/5 px-3.5 py-2 text-gray-100 font-sm shadow-sm ring-1 ring-inset ring-white/10 focus:ring-1 focus:ring-inset sm:text-sm sm:leading-6 hover:ring-gray-600"
+                        <input id="companyname" className="w-full rounded-md border-0 bg-white/5 px-3.5 py-2 text-gray-100 font-sm shadow-sm ring-1 ring-inset ring-white/10 focus:ring-1 focus:ring-inset sm:text-sm sm:leading-6 hover:ring-gray-600"
                         placeholder='Ex: Samsung'
                         onChange={(e) => { setCompanyName(e.target.value.toLowerCase()) }} />
                     </div>
                     <div>
                         <p className="font-semibold mb-2">Product Type</p>
-                        <select className="w-full rounded-md border-0 bg-white/5 pl-2 pr-3 py-2 text-gray-100 font-sm shadow-sm ring-1 ring-inset ring-white/10 focus:ring-1 focus:ring-inset sm:text-sm sm:leading-6 hover:ring-gray-600 "
+                        <select id="select" className="w-full rounded-md border-0 bg-white/5 pl-2 pr-3 py-2 text-gray-100 font-sm shadow-sm ring-1 ring-inset ring-white/10 focus:ring-1 focus:ring-inset sm:text-sm sm:leading-6 hover:ring-gray-600 "
                         onChange={(e) => { setProductType(e.target.value) }}>
                             <option className="text-gray-300" value="" disabled selected>Select your option</option>
                             <option value="dishwasher">Dishwasher</option>
@@ -86,13 +96,22 @@ export default function () {
                             <option value="electric kettle">Electric Kettle</option>
                         </select>
                     </div>
-                    <Button className="hover:bg-slate-500" onClick={handleFileUpload}>Upload</Button>
+                    <Button id="upload" className="hover:bg-slate-500" onClick={handleFileUpload}>Upload</Button>
                     {uploaded ?
                         <div className="flex items-center gap-4">
-                            <div id="circle-indicator" className="w-4 h-4 bg-green-500 rounded-full"></div>
-                            <p className="text-slate-300">YOUR KNOWLEDGEBASE IS READY AT</p>
-                            <a href={availableURL}>{availableURL}</a>
-                            <QRCode value={availableURL}></QRCode>
+                            <div className="flex items-center rounded-sm py-2 px-2 border-2 border-green-500">
+                                <div className="flex flex-col">
+                                    <div className='flex items-center gap-2 mr-4'>
+                                        <div id="circle-indicator" className="w-4 h-4 bg-green-500 rounded-full"></div>
+                                        <div className="flex flex-col">
+                                            <p className="text-slate-300">Your knowledgebase is ready at:</p>
+                                            <a className="hover:underline" href={availableURL}>{availableURL}</a>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                <QRCode value={availableURL}></QRCode>
+                            </div>
                         </div>
                         :
                         <div className="flex items-center gap-4">
