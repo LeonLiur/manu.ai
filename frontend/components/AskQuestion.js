@@ -52,7 +52,11 @@ export default function AskQuestion({ manual_id, manual_device, file_url, manual
         console.log(query_return)
 
         setFix(query_return["result"])
-        setHighlightKeyword(query_return["query_documents"][0][0].split('|')[0])
+        setHighlightKeyword(query_return["query_documents"][0].split(/[|\n]/).reduce((longest, current) => {
+            return current.length > longest.length ? current : longest;
+        }, ''))
+
+        console.log(highlightKeyword)
 
     }
 

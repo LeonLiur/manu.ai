@@ -1,16 +1,13 @@
 from typing import Union
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-import chromadb
-from chromadb.config import Settings
 import PyPDF2 as pypdf
 from tqdm import tqdm
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.document_loaders import PyPDFLoader
 from dotenv import load_dotenv
-from langchain.embeddings import OpenAIEmbeddings
+from langchain.embeddings.openai import OpenAIEmbeddings
 import os
-from langchain.vectorstores import Chroma
 from langchain.chat_models import ChatOpenAI
 import pdfminer
 from pdfminer.high_level import extract_text, extract_pages
@@ -25,6 +22,9 @@ import logging
 import random
 from botocore.exceptions import ClientError
 from supabase import create_client, Client
+import pinecone
+from langchain.vectorstores import Pinecone
+
 
 BURN_MONEY = True
 
@@ -33,9 +33,10 @@ load_dotenv()
 logger = logging.getLogger()
 logger.setLevel(logging.ERROR)
 
-chroma_client = chromadb.PersistentClient(path="./db/")
-chroma_client.heartbeat()
-# chroma_client = chromadb.Client()
+pinecone.init(api_key=os.environ["PINECONE_API_KEY"], environment="gcp-starter")
+index = pinecone.Index("manu-ai")
+embeddings = OpenAIEmbeddings()
+pinecone_store = Pinecone(index, embeddings, "text")
 
 s3_client = boto3.client("s3")
 
@@ -73,21 +74,19 @@ async def query(
     id: str, qstring: str, device: str, file: Union[UploadFile, None] = None
 ):
     id = "man" + id
-    OPEN_AI_KEY = os.environ["OPEN_AI_KEY"]
-    collection = chroma_client.get_collection(id)
-    results = collection.query(
-        query_texts=[qstring, "troubleshoot"],
-        n_results=10,
+
+    results = pinecone_store.similarity_search_with_score(
+        query=qstring, namespace=id
     )
 
-    result_distances = results["distances"]
-    result_documents = results["documents"]
+    result_documents = [result[0].page_content for result in results]
+    result_distances = [result[1] for result in results]
 
     if not BURN_MONEY:
         print(results)
         return {
             "result": "SAMPLE_TEST_TEST",
-            "query_documents": results["documents"],
+            "query_documents": result_,
         }
 
     if file:
@@ -95,7 +94,7 @@ async def query(
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer {OPEN_AI_KEY}",
+        "Authorization": f"Bearer {os.environ['OPENAI_API_KEY']}",
     }
 
     payload = {
@@ -153,9 +152,6 @@ async def upload_item(
     manual_id = "man" + manual_id
 
     print(f"[+] received uploaded PDF with ID {manual_id}")
-    collection = chroma_client.get_or_create_collection(name=manual_id)
-    running_id = 0
-
     text, tables = handle_pdf(file, manual_name, manual_id)
 
     text_splitter = RecursiveCharacterTextSplitter(
@@ -166,23 +162,25 @@ async def upload_item(
     )
     chunks = text_splitter.create_documents([text])
 
-    collection.add(
-        documents=[document.page_content for document in chunks],
-        metadatas=[document.metadata for document in chunks],
-        ids=[str(running_id + _id) for _id in range(len(chunks))],
+    pinecone_store.add_texts(
+        texts=[chunk.page_content for chunk in chunks],
+        metadatas=[chunk.metadata for chunk in chunks],
+        namespace=manual_id,
     )
-    running_id += len(chunks)
+
+    print("[+] Added texts to Pinecone")
 
     for k in tables:
         if len(tables[k]) == 0:
             continue
 
-        collection.add(
-            documents=[row for row in tables[k]],
+        pinecone_store.add_texts(
+            texts=[row for row in tables[k]],
             metadatas=[{"page_number": str(k)} for row in tables[k]],
-            ids=[str(running_id + _id) for _id in range(len(tables[k]))],
+            namespace=manual_id,
         )
-        running_id += len(tables[k])
+
+    print("[+] Added tables to Pinecone")
 
     return {"status": 200, "chunks": chunks, "tables": tables}
 
