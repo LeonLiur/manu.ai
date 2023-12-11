@@ -1,7 +1,8 @@
 from typing import Union
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import chromadb
+from chromadb.config import Settings
 import PyPDF2 as pypdf
 from tqdm import tqdm
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -19,18 +20,29 @@ import tabula
 import base64
 import io
 import requests
-import logging
 import boto3
+import logging
 import random
 from botocore.exceptions import ClientError
+from supabase import create_client, Client
 
 BURN_MONEY = True
+
+load_dotenv()
+
+logger = logging.getLogger()
+logger.setLevel(logging.ERROR)
 
 chroma_client = chromadb.PersistentClient(path="./db/")
 chroma_client.heartbeat()
 # chroma_client = chromadb.Client()
+
 s3_client = boto3.client("s3")
-load_dotenv()
+
+supabase_url = os.environ["SUPABASE_URL"]
+supabase_key = os.environ["SUPABASE_PWD"]
+supabase_client = create_client(supabase_url, supabase_key)
+
 app = FastAPI()
 
 origins = ["http://localhost:3000"]
@@ -43,6 +55,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.middleware("http")
 async def add_no_cache_header(request, call_next):
     response = await call_next(request)
@@ -50,21 +63,15 @@ async def add_no_cache_header(request, call_next):
     return response
 
 
-
 @app.get("/")
 def read_root():
-    return {"Hello": "World", "Roulette" : random.randint(1, 6)}
+    return {"Hello": "World", "Roulette": random.randint(1, 6)}
 
 
 @app.post("/query")
 async def query(
     id: str, qstring: str, device: str, file: Union[UploadFile, None] = None
 ):
-    if not BURN_MONEY:
-        return {
-            "result": "HAHAHHAHAHHAHAHAHAHA SAMPLE",
-            "query_documents": ["Leaking water"],
-        }
     id = "man" + id
     OPEN_AI_KEY = os.environ["OPEN_AI_KEY"]
     collection = chroma_client.get_collection(id)
@@ -75,6 +82,13 @@ async def query(
 
     result_distances = results["distances"]
     result_documents = results["documents"]
+
+    if not BURN_MONEY:
+        print(results)
+        return {
+            "result": "SAMPLE_TEST_TEST",
+            "query_documents": results["documents"],
+        }
 
     if file:
         base64_image = encode_image(file.file)
@@ -97,13 +111,14 @@ async def query(
             {
                 "role": "user",
                 "content": f"Help me: {qstring}, here are semantically similar embeddings ranked by similarity: {result_documents}",
-            }
+            },
         ],
         "max_tokens": 300,
     }
-    
+
     if file:
-        payload.messages.append({
+        payload.messages.append(
+            {
                 "role": "user",
                 "content": [
                     {
@@ -113,7 +128,8 @@ async def query(
                         },
                     }
                 ],
-            },)
+            },
+        )
 
     response = requests.post(
         "https://api.openai.com/v1/chat/completions", headers=headers, json=payload
@@ -171,7 +187,7 @@ async def upload_item(
     return {"status": 200, "chunks": chunks, "tables": tables}
 
 
-@app.get("/file")
+@app.get("/get_file")
 def get_file_link(file_name: str, expiration: int = 3600):
     print("[*] Generating presigned link for", file_name)
     try:
@@ -180,13 +196,34 @@ def get_file_link(file_name: str, expiration: int = 3600):
             Params={"Bucket": os.environ["BUCKET_NAME"], "Key": file_name},
             ExpiresIn=expiration,
         )
-        print("[+] Generated presigned link", response)
     except ClientError as e:
-        logging.error(e)
+        logger.error(e)
         return None
 
     # The response contains the presigned URL
     return response
+
+
+@app.post("/add_manual_to_db")
+def add_manual_to_db(
+    company_name: str, product_name: str, product_device: str, file_name: str
+):
+    db_res = (
+        supabase_client.table("manuals")
+        .insert(
+            [
+                {
+                    "company_name": company_name,
+                    "product_name": product_name,
+                    "product_device": product_device,
+                    "file_name": file_name,
+                }
+            ]
+        )
+        .execute()
+    )
+    # Return the manual_id
+    return {"manual_id": db_res.data[0]["manual_id"], "status": 200}
 
 
 def handle_pdf(file, manual_name, manual_id):
@@ -243,6 +280,6 @@ def upload_file_s3(file, bucket):
         s3_client.upload_fileobj(temp_file, bucket, file.filename)
         temp_file.close()
     except ClientError as e:
-        logging.error(e)
+        logger.error(e)
         return False
     return True

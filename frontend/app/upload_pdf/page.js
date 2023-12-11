@@ -29,11 +29,11 @@ export default function () {
             formData.append("file", file.files[0]);
             console.log(formData)
 
-            const add_to_db = await fetch(`/api/add_manual_to_db?company_name=${companyName}&product_name=${productName}&product_device=${productType}&file_name=${file.files[0].name}`, {
+            const add_to_db = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/add_manual_to_db?company_name=${companyName}&product_name=${productName}&product_device=${productType}&file_name=${file.files[0].name}`, {
                 method: 'POST'
             }).then(data => data.json())
 
-            const uploadRes = await fetch(`http://127.0.0.1:8000/upload?manual_id=${add_to_db.manual_id}&manual_name=${productName}`, {
+            const uploadRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/upload?manual_id=${add_to_db.manual_id}&manual_name=${productName}`, {
                 method: 'POST',
                 body: formData
             }).then(data => data.json());
@@ -77,8 +77,8 @@ export default function () {
                     <div>
                         <p className="font-semibold mb-2">Product Type</p>
                         <select id="select" className="w-full rounded-md border-0 bg-white/5 pl-2 pr-3 py-2 text-gray-100 font-sm shadow-sm ring-1 ring-inset ring-white/10 focus:ring-1 focus:ring-inset sm:text-sm sm:leading-6 hover:ring-gray-600 "
-                        onChange={(e) => { setProductType(e.target.value) }}>
-                            <option className="text-gray-300" value="" disabled selected>Select your option</option>
+                        onChange={(e) => { setProductType(e.target.value) }} defaultValue={""}>
+                            <option className="text-gray-300" value="" disabled>Select your option</option>
                             <option value="dishwasher">Dishwasher</option>
                             <option value="washing machine">Washing Machine</option>
                             <option value="fridge">Refridgerator</option>

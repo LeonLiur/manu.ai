@@ -47,7 +47,7 @@ async function getManualEntry(companyName, productName) {
         return { valid: false }
     }
 
-    const url = await fetch(`${process.env['NEXT_PUBLIC_BACKEND_URL']}/file?file_name=${dbRes.data.file_name}`, {
+    const url = await fetch(`${process.env['NEXT_PUBLIC_BACKEND_URL']}/get_file?file_name=${dbRes.data.file_name}`, {
         method: 'GET',
         cache: 'no-cache'
     }).then(data => data.json())
