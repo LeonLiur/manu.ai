@@ -25,6 +25,7 @@ const nextConfig = {
       },
     ];
   },
+  serverTimeout: 180000,
 };
 
 module.exports = nextConfig;

@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "setup": "npm install && pip3 install -r requirements.txt",
-    "fastapi-dev": "python3 -m uvicorn api.main:app --reload",
-    "dev": "concurrently \"next dev\" \"npm run fastapi-dev\"",
+    "fastapi-dev": "python3 -m uvicorn api.main:app --reload --timeout-keep-alive 180",
+    "dev": "concurrently \"next dev \" \"npm run fastapi-dev\"",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
