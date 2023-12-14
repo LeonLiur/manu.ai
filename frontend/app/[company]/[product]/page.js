@@ -1,7 +1,7 @@
 import Ask_Question from '@/components/AskQuestion'
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = 'https://rjdjndejomtwmwffjgxf.supabase.co'
+const supabaseUrl = process.env["SUPABASE_URL"]
 const supabaseKey = process.env["SUPABASE_KEY"]
 const supabase = createClient(supabaseUrl, supabaseKey)
 

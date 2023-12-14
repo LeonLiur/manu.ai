@@ -41,7 +41,7 @@ pinecone_store = Pinecone(index, embeddings, "text")
 s3_client = boto3.client("s3")
 
 supabase_url = os.environ["SUPABASE_URL"]
-supabase_key = os.environ["SUPABASE_PWD"]
+supabase_key = os.environ["SUPABASE_KEY"]
 supabase_client = create_client(supabase_url, supabase_key)
 
 app = FastAPI()
