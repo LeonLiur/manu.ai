@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react'
 import QRCode from 'qrcode.react';
 
 
-export default function () {
+export default function Upload() {
     const [productName, setproductName] = useState();
     const [productType, setProductType] = useState();
     const [companyName, setCompanyName] = useState();

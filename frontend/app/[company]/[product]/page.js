@@ -6,17 +6,17 @@ const supabaseKey = process.env["SUPABASE_KEY"]
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 
-// Generate segments for both [company] and [product]
-export async function generateStaticParams() {
-    const dbRes = await supabase
-        .from('manuals')
-        .select("*")
+// // Generate segments for both [company] and [product]
+// export async function generateStaticParams() {
+//     const dbRes = await supabase
+//         .from('manuals')
+//         .select("*")
 
-    return dbRes.data.map((manual) => ({
-        company: manual.company_name,
-        product: manual.product_name,
-    }))
-}
+//     return dbRes.data.map((manual) => ({
+//         company: manual.company_name,
+//         product: manual.product_name,
+//     }))
+// }
 
 
 export default async function Page({ params }) {
