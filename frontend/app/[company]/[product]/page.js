@@ -37,7 +37,7 @@ export default async function Page({ params }) {
 async function getManualEntry(companyName, productName) {
     const dbRes = await supabase
         .from('manuals')
-        .select('[file_name, company_name, product_name, product_type]')
+        .select('[manual_id, file_name, company_name, product_name, product_type]')
         .eq('company_name', companyName)
         .eq('product_name', productName)
         .limit(1)
