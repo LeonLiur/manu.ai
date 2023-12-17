@@ -13,3 +13,6 @@ tabula==1.0.5
 tabula_py==2.9.0
 tqdm==4.66.1
 jPype1==1.4.1
+uvicorn==0.24.0
+pydantic==2.5.2
+python-multipart==0.0.6
