@@ -1,6 +1,6 @@
 import { DropdownMenuIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
-import Select from "react-Select";
+import Select from "react-select";
 
 
 const options = [
