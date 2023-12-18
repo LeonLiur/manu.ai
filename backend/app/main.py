@@ -216,11 +216,6 @@ def add_manual_to_db(
 
 
 def handle_pdf(file):
-    if not upload_file_s3(file, os.environ["BUCKET_NAME"]):
-        print("[-] FAILED TO UPLOAD TO S3")
-    else:
-        print("[+] uploaded to S3")
-
     pdf = pypdf.PdfReader(file.file)
     length = len(pdf.pages)
     page_contents = []
@@ -239,6 +234,11 @@ def handle_pdf(file):
 
                     tables_on_this_page.append(current_row)
         page_contents[i]["tables"] = list(set(tables_on_this_page))
+        
+    if not upload_file_s3(file, os.environ["BUCKET_NAME"]):
+        print("[-] FAILED TO UPLOAD TO S3")
+    else:
+        print("[+] uploaded to S3")
 
     return page_contents
 
