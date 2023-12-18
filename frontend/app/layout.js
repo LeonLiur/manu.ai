@@ -1,5 +1,7 @@
 import { Inter as FontSans} from 'next/font/google'
-import './globals.css'
+import './styles/globals.css'
+import Header from '@/components/ui/header'
+import Footer from '@/components/ui/footer'
 
 export const fontSans = FontSans({
   subsets: ["latin"],
@@ -13,9 +15,12 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" style={{ margin: 0, padding: 0, boxSizing: "border-box", minHeight: "fit-content", height: "100vh"}}>
-      <body className={`${fontSans.className} bg-slate-800 text-slate-100`} style={{ boxSizing: "border-box", margin: "0", padding: "0", width: "100%", height: "100%"}}>
-      {children}</body>
+    <html lang="en">
+      <body className={`${fontSans.className}`}>
+        <Header />
+        {children}
+        <Footer />
+      </body>
     </html>
   )
 }
