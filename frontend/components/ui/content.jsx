@@ -1,6 +1,5 @@
 import React from "react";
-import Link from 'next/link'
-import { Button } from "./button";
+import Link from "next/link"
 
 const Content = () => {
   return (
@@ -55,7 +54,7 @@ const Content = () => {
                 </svg>
               </div>
               <h2 className="text-lg text-gray-900 font-medium title-font mb-2">Interactive PDF</h2>
-              <p className="leading-relaxed text-base">Don't worry, your manuals still there, just digital and searchable now.</p>
+              <p className="leading-relaxed text-base">Don&apos;t worry, your manuals still there, just digital and searchable now.</p>
             </div>
           </div>
           <div className="xl:w-1/3 md:w-1/2 p-4">
@@ -77,11 +76,11 @@ const Content = () => {
                 </svg>
               </div>
               <h2 className="text-lg text-gray-900 font-medium title-font mb-2">One and Done</h2>
-              <p className="leading-relaxed text-base">Upload your manual once, and it's superpowered forever.</p>
+              <p className="leading-relaxed text-base">Upload your manual once, and it&apos;s superpowered forever.</p>
             </div>
           </div>
         </div>
-        <Link href='/upload_pdf'>
+        <Link href="/upload_pdf">
           <button
             className="flex mx-auto mt-16 py-2 px-6 rounded-md text-white bg-indigo-500 border-2 border-indigo-500 font-semibold hover:border-indigo-900  hover:bg-indigo-900 hover:trandform ease-in-out duration-300">
             Upload Yours </button>

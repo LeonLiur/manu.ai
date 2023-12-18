@@ -13,7 +13,7 @@ export default function Upload() {
 
     useEffect(() => {
         setAvailableURL(`${window.location.protocol}//${window.location.host}/${companyName}/${productName}`)
-    }, [uploaded])
+    }, [uploaded, companyName, productName])
 
     async function handleFileUpload() {
         if (!file.files[0]) {

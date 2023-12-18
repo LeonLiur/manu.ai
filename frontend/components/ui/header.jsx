@@ -1,5 +1,8 @@
 import React from "react";
 import Link from 'next/link'
+import Script from 'next/script'
+import Image from 'next/image'
+
 const Header = () => {
     return (
         <div>
@@ -54,19 +57,27 @@ const Header = () => {
                             </div>
                         </div>
                         <div className="w-3/4 h-40 md:h-64 mt-10 rounded-lg overflow-hidden">
-                            <img src="LandingPageImage.png" alt="Manu AI workflow" className="h-full w-full" />
+                            <Image src="LandingPageImage.png" alt="Manu AI workflow" className="h-full w-full" />
                         </div>
                     </div>
 
                 </div>
             </div>
-            <script src="https://cdn.tailwindcss.com"></script>
-            <script src="https://use.fontawesome.com/03f8a0ebd4.js"></script>
 
+            <Tailwindcss />
+            <Fontawesome />
 
         </div>
     );
 };
+
+const Tailwindcss = () => {
+    <Script src="https://cdn.tailwindcss.com"></Script>
+}
+
+const Fontawesome = () => {
+    <Script src="https://use.fontawesome.com/03f8a0ebd4.js"></Script>
+}
 
 
 export default Header;

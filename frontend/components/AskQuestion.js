@@ -1,23 +1,20 @@
 "use client"
-
+import Image from 'next/image'
 import { Button } from '@/components/ui/button';
 import React, { useState, useEffect } from 'react'
 import { Viewer, Worker } from '@react-pdf-viewer/core';
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 import { highlightPlugin, Trigger } from '@react-pdf-viewer/highlight';
-import { HighlightArea, RenderHighlightsProps } from '@react-pdf-viewer/highlight';
 import { searchPlugin } from '@react-pdf-viewer/search';
-import { StatDownArrow } from "@chakra-ui/react";
 
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 import '@react-pdf-viewer/highlight/lib/styles/index.css';
 import '@react-pdf-viewer/search/lib/styles/index.css';
-import { NextIcon, PreviousIcon, SearchIcon } from '@react-pdf-viewer/search';
-import { ArrowDownRight, Camera, CameraIcon, LucideArrowLeftRight } from 'lucide-react';
+import { ArrowDownRight, CameraIcon } from 'lucide-react';
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
 
-export default function AskQuestion({ manual_id, manual_device, file_url, manual_name}) {
+export default function AskQuestion({ manual_id, manual_device, file_url, manual_name }) {
     const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
     const [question, setQuestion] = useState("")
@@ -130,7 +127,7 @@ export default function AskQuestion({ manual_id, manual_device, file_url, manual
                 matchCase: false,
             });
         }
-    }, [highlightKeyword]);
+    }, [highlightKeyword, documentLoaded]);
 
     return (
         <div className="py-6 items-center justify-center" style={{ width: "100%", height: "100%" }}>
@@ -167,7 +164,7 @@ export default function AskQuestion({ manual_id, manual_device, file_url, manual
                                 className="hover:bg-slate-700 active:scale-105 transition-transform duration-100"
                                 onClick={handleOnClick}>SUBMIT
                             </Button>
-                            
+
                         </div>
                         <div className="flex flex-row">
                             <input id="file" type="file" placeholder='Choose Image' className="w-fit hover:cursor-pointer" />
@@ -176,20 +173,20 @@ export default function AskQuestion({ manual_id, manual_device, file_url, manual
                     </div>
                     {/* <p className="rounded-sm bg-green-100 border-green-600 border-2 border-dotted text-green-900 text-medium my-4 px-2 py-2 ">
                     If your Whirlpool dishwasher is leaking, start by inspecting the door seal for any obstructions or damage. Ensure the dishwasher is level, as an uneven position can cause leaks. Check the door latch for proper operation and inspect all hoses and connections for signs of leakage. Overuse of detergent can lead to over-sudsing, which might cause leaks. Also, examine the float assembly and the water inlet valve to ensure they are functioning correctly. If these steps don't resolve the issue or if you notice significant damage, consider contacting a professional for repair.</p> */}
-                    {fix && 
+                    {fix &&
                         <div className='container items-center flex gap-2 rounded-sm bg-green-100 border-green-600 border-2 border-dotted text-green-900 text-medium my-4 px-2 py-2'>
-                            
-                            {fix && 
+
+                            {fix &&
                                 <div className="max-w-1/2">
-                                     <img className="rounded-md" src={image} />
+                                    <Image className="rounded-md" src={image} alt="user-uploaded img" />
                                 </div>
                             }
                             <p className="min-w-1/2">{fix}</p>
                         </div>
                     }
                 </div>
-                
-               
+
+
 
                 {file_url &&
                     <div className="mx-10 px-10 mt-6">
