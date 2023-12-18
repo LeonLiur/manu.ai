@@ -143,8 +143,8 @@ async def upload_item(
     manual_id = "man" + manual_id
 
     print(f"[+] received uploaded PDF with ID {manual_id}")
-    pdf_content = handle_pdf(file, manual_name, manual_id)
-
+    pdf_content = handle_pdf(file)
+    
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=chunk_size,
         chunk_overlap=chunk_size * overlap,
@@ -215,7 +215,7 @@ def add_manual_to_db(
     return {"manual_id": db_res.data[0]["manual_id"], "status": 200}
 
 
-def handle_pdf(file, manual_name, manual_id):
+def handle_pdf(file):
     if not upload_file_s3(file, os.environ["BUCKET_NAME"]):
         print("[-] FAILED TO UPLOAD TO S3")
     else:
@@ -223,9 +223,10 @@ def handle_pdf(file, manual_name, manual_id):
 
     pdf = pypdf.PdfReader(file.file)
     length = len(pdf.pages)
-    page_contents = [{}] * length
+    page_contents = []
     
     for i, page in tqdm(enumerate(pdf.pages)):
+        page_contents.append({})
         page_contents[i]["text"] = page.extract_text()
 
         dfs = tabula.read_pdf(file.file, pages=str(i + 1))
@@ -237,7 +238,8 @@ def handle_pdf(file, manual_name, manual_id):
                     current_row = "|".join(str(df[col][ind]) for col in df.columns)
 
                     tables_on_this_page.append(current_row)
-        page_contents[i]["tables"] = set(tables_on_this_page)
+        page_contents[i]["tables"] = list(set(tables_on_this_page))
+
     return page_contents
 
 
