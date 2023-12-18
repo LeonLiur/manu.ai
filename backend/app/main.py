@@ -9,9 +9,6 @@ from dotenv import load_dotenv
 from langchain.embeddings.openai import OpenAIEmbeddings
 import os
 from langchain.chat_models import ChatOpenAI
-import pdfminer
-from pdfminer.high_level import extract_text, extract_pages
-from pdfminer.image import ImageWriter
 from openai import OpenAI
 import tabula
 import base64
@@ -85,16 +82,6 @@ async def query(
     result_documents = [result[0].page_content for result in results]
     result_distances = [result[1] for result in results]
 
-    if not BURN_MONEY:
-        print(results)
-        return {
-            "result": "SAMPLE_TEST_TEST",
-            "query_documents": result_,
-        }
-
-    if file:
-        base64_image = encode_image(file.file)
-
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {os.environ['OPENAI_API_KEY']}",
@@ -119,6 +106,7 @@ async def query(
     }
 
     if file:
+        base64_image = encode_image(file.file)
         payload.messages.append(
             {
                 "role": "user",
@@ -155,7 +143,7 @@ async def upload_item(
     manual_id = "man" + manual_id
 
     print(f"[+] received uploaded PDF with ID {manual_id}")
-    text, tables = handle_pdf(file, manual_name, manual_id)
+    pdf_content = handle_pdf(file, manual_name, manual_id)
 
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=chunk_size,
@@ -163,7 +151,7 @@ async def upload_item(
         length_function=len,
         add_start_index=True,
     )
-    chunks = text_splitter.create_documents([text])
+    chunks = text_splitter.create_documents([page["text"] for page in pdf_content], metadatas=[{"page_number": str(i + 1)} for i in range(len(pdf_content))])
 
     pinecone_store.add_texts(
         texts=[chunk.page_content for chunk in chunks],
@@ -173,19 +161,19 @@ async def upload_item(
 
     print("[+] Added texts to Pinecone")
 
-    for k in tables:
-        if len(tables[k]) == 0:
+    for k in range(len(pdf_content)):
+        if len(pdf_content[k]["tables"]) == 0:
             continue
 
         pinecone_store.add_texts(
-            texts=[row for row in tables[k]],
-            metadatas=[{"page_number": str(k)} for row in tables[k]],
+            texts=[row for row in pdf_content[k]["tables"]],
+            metadatas=[{"page_number": str(k + 1)}],
             namespace=manual_id,
         )
 
     print("[+] Added tables to Pinecone")
 
-    return {"status": 200, "chunks": chunks, "tables": tables}
+    return {"status": 200, "pdf_content": pdf_content}
 
 
 @app.get("/get_file")
@@ -232,18 +220,15 @@ def handle_pdf(file, manual_name, manual_id):
         print("[-] FAILED TO UPLOAD TO S3")
     else:
         print("[+] uploaded to S3")
-    print("[*] processing text")
-    text = extract_text(file.file)
-    print("[*] processing tables")
-    tables = handle_tables(file.file)
-    return text, tables
 
+    pdf = pypdf.PdfReader(file.file)
+    length = len(pdf.pages)
+    page_contents = [{}] * length
+    
+    for i, page in tqdm(enumerate(pdf.pages)):
+        page_contents[i]["text"] = page.extract_text()
 
-def handle_tables(pdf_in):
-    length = len(pypdf.PdfReader(pdf_in).pages)
-    tables = {}
-    for page in tqdm(range(1, length + 1)):
-        dfs = tabula.read_pdf(pdf_in, pages=str(page))
+        dfs = tabula.read_pdf(file.file, pages=str(i + 1))
         tables_on_this_page = []
         for df in dfs:
             df = df.ffill()
@@ -252,9 +237,9 @@ def handle_tables(pdf_in):
                     current_row = "|".join(str(df[col][ind]) for col in df.columns)
 
                     tables_on_this_page.append(current_row)
-        tables[page] = set(tables_on_this_page)
+        page_contents[i]["tables"] = set(tables_on_this_page)
+    return page_contents
 
-    return tables
 
 
 # Function to encode the image
