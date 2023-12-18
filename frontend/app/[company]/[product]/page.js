@@ -1,11 +1,6 @@
 import Ask_Question from '@/components/AskQuestion'
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env["SUPABASE_URL"]
-const supabaseKey = process.env["SUPABASE_KEY"]
-const supabase = createClient(supabaseUrl, supabaseKey)
-
-
 // // Generate segments for both [company] and [product]
 // export async function generateStaticParams() {
 //     const dbRes = await supabase
@@ -20,13 +15,18 @@ const supabase = createClient(supabaseUrl, supabaseKey)
 
 
 export default async function Page({ params }) {
-    const manualEntry = await getManualEntry(params.company, params.product)
+
+    const supabaseUrl = process.env["SUPABASE_URL"]
+    const supabaseKey = process.env["SUPABASE_KEY"]
+    const supabase = createClient(supabaseUrl, supabaseKey)
+
+    const manualEntry = await getManualEntry(params.company, params.product, supabase)
 
     return <>
         {manualEntry &&
             manualEntry.valid ?
             <div>
-                <Ask_Question manual_id={manualEntry.manual_id} manual_device={manualEntry.product_device} file_url={manualEntry.url} manual_name = {manualEntry.product_name} />
+                <Ask_Question manual_id={manualEntry.manual_id} manual_device={manualEntry.product_device} file_url={manualEntry.url} manual_name={manualEntry.product_name} />
             </div> :
             <div>404</div>
         }
@@ -34,7 +34,7 @@ export default async function Page({ params }) {
 }
 
 
-async function getManualEntry(companyName, productName) {
+async function getManualEntry(companyName, productName, supabase) {
     const dbRes = await supabase
         .from('manuals')
         .select('[manual_id, file_name, company_name, product_name, product_type]')

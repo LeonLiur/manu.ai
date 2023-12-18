@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import React, { useEffect, useState } from 'react'
 import QRCode from 'qrcode.react';
 
-
 export default function Upload() {
     const [productName, setproductName] = useState();
     const [productType, setProductType] = useState();
@@ -27,13 +26,12 @@ export default function Upload() {
             console.log("Uploading file...");
             const formData = new FormData();
             formData.append("file", file.files[0]);
-            console.log(formData)
 
-            const add_to_db = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/add_manual_to_db?company_name=${companyName}&product_name=${productName}&product_device=${productType}&file_name=${file.files[0].name}`, {
+            const add_to_db = await fetch(`http://0.0.0.0:8000/add_manual_to_db?company_name=${companyName}&product_name=${productName}&product_device=${productType}&file_name=${file.files[0].name}`, {
                 method: 'POST'
             }).then(data => data.json())
 
-            const uploadRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/upload?manual_id=${add_to_db.manual_id}&manual_name=${productName}`, {
+            const uploadRes = await fetch(`http://0.0.0.0:8000/upload?manual_id=${add_to_db.manual_id}&manual_name=${productName}`, {
                 method: 'POST',
                 body: formData
             }).then(data => data.json());

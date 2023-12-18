@@ -38,7 +38,12 @@ index = pinecone.Index("manu-ai")
 embeddings = OpenAIEmbeddings()
 pinecone_store = Pinecone(index, embeddings, "text")
 
-s3_client = boto3.client("s3")
+s3_client = boto3.client(
+    "s3",
+    aws_access_key_id=os.environ["AWS_ACCESS_KEY"],
+    aws_secret_access_key=os.environ["AWS_SECRET_KEY"],
+    region_name="us-east-2",
+)
 
 supabase_url = os.environ["SUPABASE_URL"]
 supabase_key = os.environ["SUPABASE_KEY"]
@@ -50,7 +55,7 @@ origins = ["http://localhost:3000"]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -75,9 +80,7 @@ async def query(
 ):
     id = "man" + id
 
-    results = pinecone_store.similarity_search_with_score(
-        query=qstring, namespace=id
-    )
+    results = pinecone_store.similarity_search_with_score(query=qstring, namespace=id)
 
     result_documents = [result[0].page_content for result in results]
     result_distances = [result[1] for result in results]
@@ -269,7 +272,6 @@ def upload_file_s3(file, bucket):
     """
 
     # Upload the file
-    s3_client = boto3.client("s3")
     try:
         contents = file.file.read()
         temp_file = io.BytesIO()
