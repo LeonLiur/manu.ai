@@ -48,8 +48,6 @@ supabase_client = create_client(supabase_url, supabase_key)
 
 app = FastAPI()
 
-origins = ["http://localhost:3000"]
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
