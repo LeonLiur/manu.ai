@@ -57,7 +57,7 @@ const Header = () => {
                             </div>
                         </div>
                         <div className="w-3/4 h-40 md:h-64 mt-10 rounded-lg overflow-hidden">
-                            <Image src="/LandingPageImage.png" alt="Manu AI workflow" className="h-full w-full" fill={true}/>
+                            <Image src="/LandingPageImage.png" alt="Manu AI workflow" className="h-full w-full" width={0} height={0}/>
                         </div>
                     </div>
 
