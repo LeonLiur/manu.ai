@@ -17,9 +17,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${fontSans.className}`}>
-        <Header />
-        {children}
-        <Footer />
+      {children}
       </body>
     </html>
   )

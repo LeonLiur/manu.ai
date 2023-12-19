@@ -1,5 +1,6 @@
 import Ask_Question from '@/components/AskQuestion'
 import { createClient } from '@supabase/supabase-js'
+import { notFound } from 'next/navigation'
 
 // // Generate segments for both [company] and [product]
 // export async function generateStaticParams() {
@@ -28,7 +29,7 @@ export default async function Page({ params }) {
             <div>
                 <Ask_Question manual_id={manualEntry.manual_id} manual_device={manualEntry.product_device} file_url={manualEntry.url} manual_name={manualEntry.product_name} />
             </div> :
-            <div>404</div>
+            <div>{notFound()}</div>
         }
     </>
 }

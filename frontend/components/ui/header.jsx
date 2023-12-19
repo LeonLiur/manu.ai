@@ -2,6 +2,7 @@ import React from "react";
 import Link from 'next/link'
 import Script from 'next/script'
 import Image from 'next/image'
+import LandingPageImage from '../../public/LandingPageImage.png'
 
 const Header = () => {
     return (
@@ -57,7 +58,7 @@ const Header = () => {
                             </div>
                         </div>
                         <div className="w-3/4 h-40 md:h-64 mt-10 rounded-lg overflow-hidden">
-                            <Image src="LandingPageImage.png" alt="Manu AI workflow" className="h-full w-full" />
+                            <Image src={LandingPageImage} alt="Manu AI workflow" className="h-full w-full" />
                         </div>
                     </div>
 
