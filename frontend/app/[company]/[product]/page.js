@@ -22,13 +22,13 @@ export default async function QueryPage({ params }) {
                 <div>
                     <Ask_Question manual_id={manualEntry.manual_id} manual_device={manualEntry.product_device} file_url={manualEntry.url} manual_name={manualEntry.product_name} />
                 </div> :
-                <div>404</div>
+                <div>Manual Not Found</div>
         }
     </>
 }
 
 async function getManualEntry(params) {
-    const res = await fetch(`http://0.0.0.0:8000/retrieve_manual_from_db?companyName=${params.company}&productName=${params.product}`, {
+    const res = await fetch(`${process.env["NEXT_PUBLIC_BACKEND_URL"]}/retrieve_manual_from_db?companyName=${params.company}&productName=${params.product}`, {
         method: 'GET',
         cache: 'no-cache',
     }).then(data => data.json())
