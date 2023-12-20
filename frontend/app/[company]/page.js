@@ -14,7 +14,7 @@ async function getCompanyProducts(companyName) {
     cache: 'no-cache',
   }).then(data => data.json())
 
-  const products = res.products?.map((product) => <div className="underline">
+  const products = res.products?.map((product) => <div className="underline" key={product}>
     <Link href={`/${companyName}/${product}`}>
       {product}
     </Link>
