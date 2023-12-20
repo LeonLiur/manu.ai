@@ -127,7 +127,7 @@ export default function AskQuestion({ manual_id, manual_device, file_url, manual
                 matchCase: false,
             });
         }
-    }, [highlightKeyword, documentLoaded]);
+    }, [highlightKeyword, documentLoaded, highlight]);
 
     return (
         <div className="py-6 items-center justify-center" style={{ width: "100%", height: "100%" }}>
