@@ -245,6 +245,25 @@ def retrieve_manual_from_db(companyName: str, productName: str):
         )
 
 
+@app.get("/get_company_products")
+def get_manuals_by_company(companyName: str):
+    try:
+        response = (
+            supabase_client.table("manuals")
+            .select("product_name")
+            .eq("company_name", companyName)
+            .execute()
+        )
+
+        return {"products": [row["product_name"] for row in response.data]}
+    except Exception as e:
+        print(f"[-] ERROR: {e}")
+        return HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"{e}",
+        )
+
+
 def handle_pdf(file):
     pdf = pypdf.PdfReader(file.file)
     length = len(pdf.pages)
