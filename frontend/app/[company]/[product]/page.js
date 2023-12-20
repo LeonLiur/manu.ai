@@ -29,7 +29,7 @@ export default async function Page({ params }) {
             <div>
                 <Ask_Question manual_id={manualEntry.manual_id} manual_device={manualEntry.product_device} file_url={manualEntry.url} manual_name={manualEntry.product_name} />
             </div> :
-            <div>{notFound()}</div>
+            {notFound}
         }
     </>
 }
