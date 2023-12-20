@@ -1,5 +1,5 @@
 from typing import Union
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi import FastAPI, UploadFile, File, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 import PyPDF2 as pypdf
 from tqdm import tqdm
@@ -142,14 +142,17 @@ async def upload_item(
 
     print(f"[+] received uploaded PDF with ID {manual_id}")
     pdf_content = handle_pdf(file)
-    
+
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=chunk_size,
         chunk_overlap=chunk_size * overlap,
         length_function=len,
         add_start_index=True,
     )
-    chunks = text_splitter.create_documents([page["text"] for page in pdf_content], metadatas=[{"page_number": str(i + 1)} for i in range(len(pdf_content))])
+    chunks = text_splitter.create_documents(
+        [page["text"] for page in pdf_content],
+        metadatas=[{"page_number": str(i + 1)} for i in range(len(pdf_content))],
+    )
 
     pinecone_store.add_texts(
         texts=[chunk.page_content for chunk in chunks],
@@ -213,11 +216,40 @@ def add_manual_to_db(
     return {"manual_id": db_res.data[0]["manual_id"], "status": 200}
 
 
+@app.get("/retrieve_manual_from_db")
+def retrieve_manual_from_db(companyName: str, productName: str):
+    try:
+        response = (
+            supabase_client.table("manuals")
+            .select("manual_id, file_name, company_name, product_name, product_device")
+            .eq("company_name", companyName)
+            .eq("product_name", productName)
+            .limit(1)
+            .single()
+            .execute()
+        )
+
+        url = get_file_link(response.data["file_name"])
+        return {
+            "status": 200,
+            "url": url,
+            "manual_id": response.data["manual_id"],
+            "product_name": response.data["product_name"],
+            "product_device": response.data["product_device"],
+        }
+    except Exception as e:
+        print(f"[-] ERROR: {e}")
+        return HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error retrieving manual from database: {e}",
+        )
+
+
 def handle_pdf(file):
     pdf = pypdf.PdfReader(file.file)
     length = len(pdf.pages)
     page_contents = []
-    
+
     for i, page in tqdm(enumerate(pdf.pages)):
         page_contents.append({})
         page_contents[i]["text"] = page.extract_text()
@@ -232,14 +264,13 @@ def handle_pdf(file):
 
                     tables_on_this_page.append(current_row)
         page_contents[i]["tables"] = list(set(tables_on_this_page))
-        
+
     if not upload_file_s3(file, os.environ["BUCKET_NAME"]):
         print("[-] FAILED TO UPLOAD TO S3")
     else:
         print("[+] uploaded to S3")
 
     return page_contents
-
 
 
 # Function to encode the image
