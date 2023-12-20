@@ -9,7 +9,7 @@ export default function Page({ params }) {
 }
 
 async function getCompanyProducts(companyName) {
-  const res = await fetch(`${process.env['NEXT_PUBLIC_BACKEND_URL']}/get_company_products?companyName=${companyName}`, {
+  const res = await fetch(`${process.env['BACKEND_URL']}/get_company_products?companyName=${companyName}`, {
     method: 'GET',
     cache: 'no-cache',
   }).then(data => data.json())

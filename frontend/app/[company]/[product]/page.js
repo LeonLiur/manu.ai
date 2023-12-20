@@ -15,7 +15,7 @@ export default async function QueryPage({ params }) {
 }
 
 async function getManualEntry(params) {
-    const res = await fetch(`${process.env['NEXT_PUBLIC_BACKEND_URL']}/retrieve_manual_from_db?companyName=${params.company}&productName=${params.product}`, {
+    const res = await fetch(`${process.env['BACKEND_URL']}/retrieve_manual_from_db?companyName=${params.company}&productName=${params.product}`, {
         method: 'GET',
         cache: 'no-cache',
     }).then(data => data.json())

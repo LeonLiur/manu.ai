@@ -198,22 +198,29 @@ def get_file_link(file_name: str, expiration: int = 3600):
 def add_manual_to_db(
     company_name: str, product_name: str, product_device: str, file_name: str
 ):
-    db_res = (
-        supabase_client.table("manuals")
-        .insert(
-            [
-                {
-                    "company_name": company_name,
-                    "product_name": product_name,
-                    "product_device": product_device,
-                    "file_name": file_name,
-                }
-            ]
+    print("add manual to DBB")
+    try:
+        db_res = (
+            supabase_client.table("manuals")
+            .insert(
+                [
+                    {
+                        "company_name": company_name,
+                        "product_name": product_name,
+                        "product_device": product_device,
+                        "file_name": file_name,
+                    }
+                ]
+            )
+            .execute()
         )
-        .execute()
-    )
-    # Return the manual_id
-    return {"manual_id": db_res.data[0]["manual_id"], "status": 200}
+        # Return the manual_id
+        return {"manual_id": db_res.data[0]["manual_id"], "status": 200}
+    except Exception as e:
+        print(f"[-] ERROR in /add_manual_to_db: {e}")
+        return HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"{e}"
+        )
 
 
 @app.get("/retrieve_manual_from_db")
@@ -238,7 +245,7 @@ def retrieve_manual_from_db(companyName: str, productName: str):
             "product_device": response.data["product_device"],
         }
     except Exception as e:
-        print(f"[-] ERROR: {e}")
+        print(f"[-] ERROR in /retrieve_manual_from_db: {e}")
         return HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error retrieving manual from database: {e}",
@@ -257,7 +264,7 @@ def get_manuals_by_company(companyName: str):
 
         return {"products": [row["product_name"] for row in response.data]}
     except Exception as e:
-        print(f"[-] ERROR: {e}")
+        print(f"[-] ERROR in /get_company_products: {e}")
         return HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"{e}",
@@ -298,23 +305,16 @@ def encode_image(image_file):
 
 
 def upload_file_s3(file, bucket):
-    """Upload a file to an S3 bucket
-
-    :param file_name: File to upload
-    :param bucket: Bucket to upload to
-    :param object_name: S3 object name. If not specified then file_name is used
-    :return: True if file was uploaded, else False
-    """
-
-    # Upload the file
     try:
+        file.file.seek(0)
         contents = file.file.read()
         temp_file = io.BytesIO()
         temp_file.write(contents)
         temp_file.seek(0)
         s3_client.upload_fileobj(temp_file, bucket, file.filename)
         temp_file.close()
+        file.file.close()
     except ClientError as e:
-        logger.error(e)
+        print(e)
         return False
     return True
