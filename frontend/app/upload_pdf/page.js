@@ -1,8 +1,9 @@
 "use client"
 
 import { Button } from '@/components/ui/button';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import QRCode from 'qrcode.react';
+import clsx from 'clsx';
 
 export default function Upload() {
     const [productName, setproductName] = useState();
@@ -10,19 +11,25 @@ export default function Upload() {
     const [companyName, setCompanyName] = useState();
     const [uploaded, setUploaded] = useState(false);
     const [availableURL, setAvailableURL] = useState();
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         setAvailableURL(`${window.location.protocol}//${window.location.host}/${companyName}/${productName}`)
     }, [uploaded, companyName, productName])
 
+    const buttonStyle = useMemo(() => {
+        clsx("hover:bg-slate-500", {
+            "animate-pulse": loading,
+            "duration-100": loading,
+            "disabled": loading,
+        })
+    }, [loading])
+
     async function handleFileUpload() {
         if (!file.files[0]) {
             console.log("No file selected")
         } else {
-            document.getElementById("upload").classList.add("animate-pulse");
-            document.getElementById("upload").classList.add("duration-100");
-            document.getElementById("upload").setAttribute("disabled", "true");
-            document.getElementById("upload").innerHTML = "Uploading...";
+            setLoading(true)
             console.log("Uploading file...");
             const formData = new FormData();
             formData.append("file", file.files[0]);
@@ -38,7 +45,7 @@ export default function Upload() {
 
 
             setUploaded(uploadRes.status == 200)
-            document.getElementById("upload").classList.remove("animate-pulse")
+            setLoading(false)
             document.getElementById("upload").innerHTML = "Uploaded"
             document.getElementById("file").value = "";
             document.getElementById("manualname").value = "";
@@ -94,7 +101,7 @@ export default function Upload() {
                             <option value="electric kettle">Electric Kettle</option>
                         </select>
                     </div>
-                    <Button id="upload" className="hover:bg-slate-500" onClick={handleFileUpload}>Upload</Button>
+                    <Button id="upload" className={buttonStyle} onClick={handleFileUpload}>{loading ? "Uploading...": "Upload"}</Button>
                     {uploaded ?
                         <div className="flex items-center gap-4">
                             <div className="flex items-center rounded-sm py-2 px-2 border-2 border-green-500">
@@ -102,7 +109,7 @@ export default function Upload() {
                                     <div className='flex items-center gap-2 mr-4'>
                                         <div id="circle-indicator" className="w-4 h-4 bg-green-500 rounded-full"></div>
                                         <div className="flex flex-col">
-                                            <p className="text-slate-300">Your knowledgebase is ready at:</p>
+                                            <p className="text-slate-800 dark:text-slate-300">Your knowledgebase is ready at:</p>
                                             <a className="hover:underline" href={availableURL}>{availableURL}</a>
                                         </div>
                                     </div>

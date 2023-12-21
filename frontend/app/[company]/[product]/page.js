@@ -18,18 +18,21 @@ import { notFound } from 'next/navigation'
 export default async function Page({ params }) {
 
     const supabaseUrl = process.env["SUPABASE_URL"]
+    console.log(supabaseUrl)
     const supabaseKey = process.env["SUPABASE_KEY"]
     const supabase = createClient(supabaseUrl, supabaseKey)
 
     const manualEntry = await getManualEntry(params.company, params.product, supabase)
-
+    if(!manualEntry){
+        notFound();
+    }
     return <>
         {manualEntry &&
             manualEntry.valid ?
             <div>
                 <Ask_Question manual_id={manualEntry.manual_id} manual_device={manualEntry.product_device} file_url={manualEntry.url} manual_name={manualEntry.product_name} />
             </div> :
-            {notFound}
+            <p> product manual not found </p>
         }
     </>
 }

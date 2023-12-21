@@ -15,7 +15,7 @@ const Header = () => {
                             <li className="hover:underline  underline-offset-4 decoration-2 decoration-white py-2 rounded-lg px-5">
                                 <a href="#">Find Your Manual</a></li>
                             <li className="hover:underline underline-offset-4 decoration-2 decoration-white py-2 rounded-lg px-5"><a
-                                href="#">Add Your Manual</a></li>
+                                href="upload_pdf">Add Your Manual</a></li>
                             <li className="hover:underline underline-offset-4 decoration-2 decoration-white py-2 rounded-lg px-5"><a
                                 href="#">Contact</a></li>
                         </ul>
@@ -49,7 +49,7 @@ const Header = () => {
                             <div className="md:text-lg">
                                 <Link href='/upload_pdf'>
                                     <button
-                                        className="p-1 m-2 rounded-md text-white bg-indigo-500 border-2 border-indigo-500 px-4 font-semibold hover:border-indigo-900  hover:bg-indigo-900 hover:trandform ease-in-out duration-300">
+                                        href="upload_pdf" className="p-1 m-2 rounded-md text-white bg-indigo-500 border-2 border-indigo-500 px-4 font-semibold hover:border-indigo-900  hover:bg-indigo-900 hover:trandform ease-in-out duration-300">
                                         Upload Yours </button>
                                 </Link>
                                 <button
