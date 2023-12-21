@@ -1,5 +1,5 @@
 import { Inter as FontSans} from 'next/font/google'
-import './styles/globals.css'
+import './globals.css'
 import Header from '@/components/ui/header'
 import Footer from '@/components/ui/footer'
 
@@ -17,9 +17,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${fontSans.className}`}>
-        <Header />
-        {children}
-        <Footer />
+      {children}
       </body>
     </html>
   )

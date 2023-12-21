@@ -1,15 +1,19 @@
 import Ask_Question from '@/components/AskQuestion'
+import { notFound } from 'next/navigation'
 
 export default async function QueryPage({ params }) {
     const manualEntry = await getManualEntry(params)
+    if(manualEntry.status != 200){
+        notFound();
+    }
 
     return <>
         {
-            manualEntry.status == 200 ?
+            manualEntry.status === 200 ?
                 <div>
                     <Ask_Question manual_id={manualEntry.manual_id} manual_device={manualEntry.product_device} file_url={manualEntry.url} manual_name={manualEntry.product_name} />
                 </div> :
-                <div>Manual Not Found</div>
+                <div>404: Manual Not Found</div>
         }
     </>
 }
