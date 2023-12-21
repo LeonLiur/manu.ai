@@ -18,7 +18,7 @@ export default function AskQuestion({ manual_id, manual_device, file_url, manual
     const [question, setQuestion] = useState("")
     const [image, setImage] = useState(null)
     const [fix, setFix] = useState(null)
-    const [documentLoaded, setDocumentLoaded] = useState(false);
+    const [documentLoaded, setDocumentLoaded] = useState(false)
     const [highlightKeyword, setHighlightKeyword] = useState("");
 
     const handleOnClick = async () => {
@@ -42,73 +42,29 @@ export default function AskQuestion({ manual_id, manual_device, file_url, manual
             }).then(data => data.json())
         }
 
-
-
         console.log(query_return)
 
         setFix(query_return["result"])
-        setHighlightKeyword(query_return["query_documents"][0].split(/[|\n]/).reduce((longest, current) => {
+        
+        const kwd = query_return["query_documents"][0].split(/[|\n]/).reduce((longest, current) => {
             return current.length > longest.length ? current : longest;
-        }, ''))
+        }, '')
 
-        console.log(highlightKeyword)
+        setHighlightKeyword(kwd)
 
+        highlight({
+            keyword: kwd,
+            matchCase: false,
+        })
+
+        console.log(kwd)
     }
 
-    const areas = [
-        {
-            pageIndex: 3,
-            height: 1.55401,
-            width: 28.1674,
-            left: 27.5399,
-            top: 15.0772,
-        },
-        {
-            pageIndex: 3,
-            height: 1.32637,
-            width: 37.477,
-            left: 55.7062,
-            top: 15.2715,
-        },
-        {
-            pageIndex: 3,
-            height: 1.55401,
-            width: 28.7437,
-            left: 16.3638,
-            top: 16.6616,
-        },
-    ];
 
 
 
     const defaultLayoutPluginInstance = defaultLayoutPlugin();
-    const renderHighlights = (props) => (
-        <div>
-            {areas
-                .filter((area) => area.pageIndex === props.pageIndex)
-                .map((area, idx) => (
-                    <div
-                        key={idx}
-                        className="highlight-area"
-                        style={Object.assign(
-                            {},
-                            {
-                                background: 'yellow',
-                                opacity: 0.4,
-                            },
-                            // Calculate the position
-                            // to make the highlight area displayed at the desired position
-                            // when users zoom or rotate the document
-                            props.getCssProperties(area, props.rotation)
-                        )}
-                    />
-                ))}
-        </div>
-    );
-    const highlightPluginInstance = highlightPlugin({
-        renderHighlights,
-        trigger: Trigger.None,
-    });
+
     const searchPluginInstance = searchPlugin({
         enableShortcuts: true,
     });
@@ -116,16 +72,6 @@ export default function AskQuestion({ manual_id, manual_device, file_url, manual
     const { highlight } = searchPluginInstance;
 
     const default_page = 0;
-
-
-    useEffect(() => {
-        if (documentLoaded) {
-            highlight({
-                keyword: highlightKeyword,
-                matchCase: false,
-            });
-        }
-    }, [highlightKeyword, documentLoaded, highlight]);
 
     return (
         <div className="py-6 items-center justify-center" style={{ width: "100%", height: "100%" }}>
@@ -169,14 +115,13 @@ export default function AskQuestion({ manual_id, manual_device, file_url, manual
                             <div className="flex flex-grow"></div>
                         </div>
                     </div>
-                    {/* <p className="rounded-sm bg-green-100 border-green-600 border-2 border-dotted text-green-900 text-medium my-4 px-2 py-2 ">
-                    If your Whirlpool dishwasher is leaking, start by inspecting the door seal for any obstructions or damage. Ensure the dishwasher is level, as an uneven position can cause leaks. Check the door latch for proper operation and inspect all hoses and connections for signs of leakage. Overuse of detergent can lead to over-sudsing, which might cause leaks. Also, examine the float assembly and the water inlet valve to ensure they are functioning correctly. If these steps don't resolve the issue or if you notice significant damage, consider contacting a professional for repair.</p> */}
+
                     {fix &&
                         <div className='container items-center flex gap-2 rounded-sm bg-green-100 border-green-600 border-2 border-dotted text-green-900 text-medium my-4 px-2 py-2'>
 
                             {fix &&
                                 <div className="max-w-1/2">
-                                    <Image className="rounded-md" src={image} alt="user-uploaded img" />
+                                    {image && <Image className="rounded-md" src={image} alt="user-uploaded img" />}
                                 </div>
                             }
                             <p className="min-w-1/2">{fix}</p>
@@ -195,7 +140,6 @@ export default function AskQuestion({ manual_id, manual_device, file_url, manual
                                     fileUrl={file_url ? file_url : "../blank_pdf.pdf"}
                                     plugins={[
                                         defaultLayoutPluginInstance,
-                                        // highlightPluginInstance,
                                         searchPluginInstance
                                     ]}
                                     initialPage={default_page}
