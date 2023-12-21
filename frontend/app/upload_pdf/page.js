@@ -34,11 +34,11 @@ export default function Upload() {
             const formData = new FormData();
             formData.append("file", file.files[0]);
 
-            const add_to_db = await fetch(`http://0.0.0.0:8000/add_manual_to_db?company_name=${companyName}&product_name=${productName}&product_device=${productType}&file_name=${file.files[0].name}`, {
+            const add_to_db = await fetch(`${process.env["NEXT_PUBLIC_BACKEND_URL"]}/add_manual_to_db?company_name=${companyName}&product_name=${productName}&product_device=${productType}&file_name=${file.files[0].name}`, {
                 method: 'POST'
             }).then(data => data.json())
 
-            const uploadRes = await fetch(`http://0.0.0.0:8000/upload?manual_id=${add_to_db.manual_id}&manual_name=${productName}`, {
+            const uploadRes = await fetch(`${process.env["NEXT_PUBLIC_BACKEND_URL"]}/upload?manual_id=${add_to_db.manual_id}&manual_name=${productName}`, {
                 method: 'POST',
                 body: formData
             }).then(data => data.json());
@@ -49,8 +49,8 @@ export default function Upload() {
             document.getElementById("upload").innerHTML = "Uploaded"
             document.getElementById("file").value = "";
             document.getElementById("manualname").value = "";
-            document.getElementById("companyname").value ="";
-            document.getElementById("select").value ="";
+            document.getElementById("companyname").value = "";
+            document.getElementById("select").value = "";
         }
     }
 
@@ -61,7 +61,6 @@ export default function Upload() {
             </div>
             <div className="flex mt-10 w-[700] min-w-[400] justify-center items-center">
                 <div className="flex flex-col p-10 border-2  border-gray-400 dark:border-gray-600 rounded-md shadow-md shadow-gray-300 dark:shadow-slate-900 gap-4">
-                    
                     <div className="flex flex-col justify-center">
                         <p className="self-center h-12 w-12 text-3xl">📋</p>
                         <h1 className="self-center text-3xl font-bold mb-10">Upload PDF</h1>
@@ -71,7 +70,7 @@ export default function Upload() {
                         <p className="font-semibold mb-2">Manual Name</p>
                         <input id="manualname" className="w-full rounded-md border-0 bg-white/5 px-3.5 py-2 text-slate-900 font-sm shadow-sm ring-1 ring-inset dark:text-white  ring-white/10 focus:ring-1 focus:ring-inset sm:text-sm sm:leading-6 hover:ring-gray-600"
                         placeholder='Ex: Samsung Spin Cycle 3000'
-                        onChange={(e) => { setproductName(e.target.value) }} />
+                        onChange={(e) => { setproductName(e.target.value.toLowerCase()) }} />
                     </div>
                     <div>
                         <p className="font-semibold mb-2">Company Name</p>
@@ -113,7 +112,7 @@ export default function Upload() {
                                             <a className="hover:underline" href={availableURL}>{availableURL}</a>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
                                 <QRCode value={availableURL}></QRCode>
                             </div>
@@ -123,7 +122,6 @@ export default function Upload() {
                             <div id="circle-indicator" className="w-4 h-4 bg-red-500 rounded-full"></div>
                             <p className="text-slate-900 dark:text-white">NOT UPLOADED</p>
                             <div className= "flex flex-grow"></div>
-                            
                         </div>
                     }
                 </div>

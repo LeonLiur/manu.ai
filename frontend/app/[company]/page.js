@@ -1,16 +1,25 @@
-"use client"
-import { Button } from "@/components/ui/button";
-import { redirect } from "next/navigation";
+import Link from "next/link"
 
 export default function Page({ params }) {
-    return<main className = "flex overflow-hidden h-screen w-screen justify-center">
-        <div className = 'flex flex-col justify-center items-center w-[500px]'>
-            <h1 className='text-5xl font-bold dark:text-white'>404</h1>
-            <p className='text-md text-center my-10 dark:text-white'>Even our semantic search couldn't find this page. Are you sure the website URL is correct? Get back in touch with the site owner</p>
-            <Button variant='outline' href='/'>Go Back Home</Button>
-        </div>
-  </main>
+  const products = getCompanyProducts(params.company)
+  return <>
+    <h1 className="w-120 text-lg">Manuals for {params.company}</h1>
+    {products}
+  </>
 }
 
+async function getCompanyProducts(companyName) {
+  const res = await fetch(`${process.env['BACKEND_URL']}/get_company_products?companyName=${companyName}`, {
+    method: 'GET',
+    cache: 'no-cache',
+  }).then(data => data.json())
 
+  const products = res.products?.map((product) => <div className="underline" key={product}>
+    <Link href={`/${companyName}/${product}`}>
+      {product}
+    </Link>
+  </div>
+  )
 
+  return products
+}
