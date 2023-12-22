@@ -97,7 +97,7 @@ export default function AskQuestion({ manual_id, manual_device, file_url, manual
                         <div className='flex'>
                             <div className="relative w-full mr-2">
                                 <input
-                                    className="min-w-0 w-full mr-2 rounded-md border-0 bg-white/5 px-3.5 py-2 text-white font-medium shadow-sm ring-1 ring-inset ring-white/10 focus:ring-1 focus:ring-inset sm:text-sm sm:leading-6 "
+                                    className="min-w-0 w-full mr-2 rounded-md border-0 bg-white/5 px-3.5 py-2 text-black font-medium shadow-sm ring-1 ring-inset ring-white/10 focus:ring-1 focus:ring-inset sm:text-sm sm:leading-6 "
                                     name="question" id="question" placeholder="My dishwasher won't turn on" onChange={(e) => setQuestion(e.target.value)}>
                                 </input>
                                 <button className='absolute right-0 top-0 px-3 py-2'>
