@@ -13,6 +13,6 @@ services:
     build:
       context: ./backend
     ports:
-      - "8000:8000"
+      - "8000:80"
     env_file:
       - ./backend/.env
