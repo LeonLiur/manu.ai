@@ -32,12 +32,12 @@ export default function AskQuestion({ manual_id, manual_device, file_url, manual
             formData.append("file", file.files[0])
             setImage(URL.createObjectURL(file.files[0]))
 
-            query_return = await fetch(`${process.env.BACKEND_URL}/query?id=${manual_id}&qstring=${question}&device=${manual_device}`, {
+            query_return = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/query?id=${manual_id}&qstring=${question}&device=${manual_device}`, {
                 method: 'POST',
                 body: file.files[0]
             }).then(data => data.json())
         } else {
-            query_return = await fetch(`${process.env.BACKEND_URL}/query?id=${manual_id}&qstring=${question}&device=${manual_device}`, {
+            query_return = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/query?id=${manual_id}&qstring=${question}&device=${manual_device}`, {
                 method: 'POST',
             }).then(data => data.json())
         }
