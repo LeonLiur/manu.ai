@@ -88,35 +88,6 @@ export default function Upload() {
     const { register, control, handleSubmit, formState} = form;
     const { errors } = formState;
 
-    // async function handleFileUpload() {
-    //     if (!file.files[0]) {
-    //         console.log("No file selected")
-    //     } else {
-    //         setLoading(true)
-    //         console.log("Uploading file...");
-    //         const formData = new FormData();
-    //         formData.append("file", file.files[0]);
-
-    //         const add_to_db = await fetch(`${process.env["NEXT_PUBLIC_BACKEND_URL"]}/add_manual_to_db?company_name=${companyName}&product_name=${productName}&product_device=${productType}&file_name=${file.files[0].name}`, {
-    //             method: 'POST'
-    //         }).then(data => data.json())
-
-    //         const uploadRes = await fetch(`${process.env["NEXT_PUBLIC_BACKEND_URL"]}/upload?manual_id=${add_to_db.manual_id}&manual_name=${productName}`, {
-    //             method: 'POST',
-    //             body: formData
-    //         }).then(data => data.json());
-
-
-    //         setUploaded(uploadRes.status == 200)
-    //         setLoading(false)
-    //         document.getElementById("upload").innerHTML = "Uploaded"
-    //         document.getElementById("file").value = "";
-    //         document.getElementById("manualname").value = "";
-    //         document.getElementById("companyname").value = "";
-    //         document.getElementById("select").value = "";
-    //     }
-    // }
-
     return (
         <div className="py-6 items-center justify-center" style={{ width: "100%", height: "100%" }}>
             <div className="flex flex-row mx-10">
