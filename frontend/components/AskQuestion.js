@@ -14,6 +14,8 @@ import '@react-pdf-viewer/search/lib/styles/index.css';
 import { ArrowDownRight, CameraIcon } from 'lucide-react';
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
 
+
+
 export default function AskQuestion({ manual_id, manual_device, file_url, manual_name }) {
     const [question, setQuestion] = useState("")
     const [image, setImage] = useState(null)
@@ -82,11 +84,11 @@ export default function AskQuestion({ manual_id, manual_device, file_url, manual
                 <h1 className="text-5xl font-bold self-center mb-2">Ask Away</h1>
                 <div className="flex w-full justify-center mb-5 justify-items-center gap-2">
                     <div className="flex flex-grow"></div>
-                    <a className="text-sm flex w-fit bg-slate-700 border-slate-400 border-2 pr-3 pl-2 rounded-full items-center hover:bg-slate-500 hover:border-b-slate-400">
+                    <a className="text-sm flex w-fit hover:bg-gray-200/50 hover:border-gray-200 dark:bg-slate-700 dark:border-slate-400 border-2 pr-3 pl-2 rounded-full items-center dark:hover:bg-slate-500 dark:hover:border-b-slate-400">
                         <ArrowDownRight className="h-4 w-4 mr-3" />
                         Manual: {manual_name}
                     </a>
-                    <a className="text-sm flex w-fit bg-slate-700 border-slate-400 border-2 pr-3 pl-2 rounded-full items-center hover:bg-slate-500 hover:border-b-slate-400">
+                    <a className="text-sm flex w-fit hover:bg-gray-200/50 hover:border-gray-200 dark:bg-slate-700 dark:border-slate-400 border-2 pr-3 pl-2 rounded-full items-center dark:hover:bg-slate-500 dark:hover:border-b-slate-400">
                         <MagnifyingGlassIcon className="h-4 w-4 mr-3" />
                         ID: {manual_id}
                     </a>

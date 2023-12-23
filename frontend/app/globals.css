@@ -50,7 +50,12 @@
     }
   }
   
- 
+ .error{
+    color: red;
+    font-size: 12px;
+    text-align: left;
+ }
+
 @layer base {
   * {
     @apply border-border;
