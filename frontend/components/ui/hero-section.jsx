@@ -3,23 +3,42 @@ import Image from 'next/image'
 
 const HeroSection = () => {
   return (
-    <section className="text-gray-600 body-font">
-      <div className="container mx-auto flex px-5 py-24 md:flex-row flex-col items-center">
-        <div className="lg:max-w-lg lg:w-full md:w-1/2 w-5/6 mb-10 md:mb-0">
-          <Image className="object-cover object-center rounded" alt="hero" src="https://dummyimage.com/720x600" />
-        </div>
-        <div className="lg:flex-grow md:w-1/2 lg:pl-24 md:pl-16 flex flex-col md:items-start md:text-left items-center text-center">
-          <h1 className="title-font sm:text-4xl text-3xl mb-4 font-medium text-gray-900">Before they sold out
-            <br className="hidden lg:inline-block" />readymade gluten
-          </h1>
-          <p className="mb-8 leading-relaxed">Copper mug try-hard pitchfork pour-over freegan heirloom neutra air plant cold-pressed tacos poke beard tote bag. Heirloom echo park mlkshk tote bag selvage hot chicken authentic tumeric truffaut hexagon try-hard chambray.</p>
-          <div className="flex justify-center">
-            <button className="inline-flex text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg">Button</button>
-            <button className="ml-4 inline-flex text-gray-700 bg-gray-100 border-0 py-2 px-6 focus:outline-none hover:bg-gray-200 rounded text-lg">Button</button>
+    <>
+      <div className="flex justify-center ">
+        <div className="flex flex-col justify-center">
+
+          <div className="flex flex-col max-w-7xl justify-center items-center p-2 mt-10">
+            <div className="flex flex-col w-[90%] md:w-3/4 text-center items-center justify-center space-y-3">
+              <div className="text-5xl font-bold ">
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-pink-700 my-5 drop-shadow-lg shadow-indigo-800 ">Superpowering </span>
+                <br></br>
+                <span className="">User Manuals</span>
+              </div>
+              <div className="text-xl font-semibold text-gray-400 ">
+                Turn your user manual into a digital interactive knowledgebase
+              </div>
+              <div className="md:text-lg">
+                <Link href='/upload_pdf'>
+                  <button
+                    href="upload_pdf" className="p-1 m-2 rounded-md text-white bg-indigo-500 border-2 border-indigo-500 px-4 font-semibold hover:border-indigo-900  hover:bg-indigo-900 hover:trandform ease-in-out duration-300">
+                    Upload Yours </button>
+                </Link>
+                <button
+                  className="p-1 m-2 rounded-md text-indigo-500 bg-transparent border-2 border-indigo-500 px-4 font-semibold hover:text-white hover:bg-indigo-500 hover:trandform ease-in-out duration-300">
+                  Try a Demo </button>
+              </div>
+            </div>
+            <div className="w-3/4 h-40 md:h-64 mt-10 rounded-lg overflow-hidden">
+              <Image src={LandingPageImage} priority={true} alt="Manu AI workflow" className="h-full w-full" />
+            </div>
           </div>
+
         </div>
       </div>
-    </section>
+
+      <Tailwindcss />
+      <Fontawesome />
+    </>
   )
 }
 

@@ -9,7 +9,7 @@ export const fontSans = FontSans({
 })
 
 export const metadata = {
-  title: 'manual.ai',
+  title: 'Manu.AI',
   description: 'Migrate to a smarter manual',
 }
 
