@@ -64,7 +64,7 @@ function StyledDropzone({ control, name, ...rest}) {
                 ));
 
                 return (
-                    <div className="container w-full">
+                    <div className="container w-full cursor-pointer">
                         <div {...getRootProps({ style })}>
                             <input {...getInputProps()} />
                             <div>
@@ -74,7 +74,7 @@ function StyledDropzone({ control, name, ...rest}) {
                                         <ul className='text-black'>{acceptedFileItems}</ul>
                                     </>
                                     :
-                                    <p>"Drag 'n' drop some files here, or click to select files"</p>
+                                    <p>Drop file here or <span className='underline'>upload</span></p>
                                 }
                             </div>
                         </div>

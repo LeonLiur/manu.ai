@@ -22,7 +22,7 @@ export default function Upload() {
     }, [uploaded, companyName, productName])
 
     const form = useForm({
-        mode:'onChange',
+        mode: 'onChange',
         defaultValues: {
             file: "",
             companyName: "",
@@ -44,14 +44,14 @@ export default function Upload() {
     const onError = (errors, e) => {
 
         console.log(errors, e);
-    
+
     }
 
     const onSubmit = async (data) => {
         console.log(data);
         setUploaded(false);
-        if(!data.file[0]) console.log("No file selected");
-        else{
+        if (!data.file[0]) console.log("No file selected");
+        else {
             let companyName = data.companyName.toLowerCase();
             let productName = data.productName.toLowerCase();
             let productType = data.productType;
@@ -85,7 +85,7 @@ export default function Upload() {
         }
     }
 
-    const { register, control, handleSubmit, formState} = form;
+    const { register, control, handleSubmit, formState } = form;
     const { errors } = formState;
 
     return (
@@ -98,32 +98,24 @@ export default function Upload() {
                     </div>
                     <form onSubmit={handleSubmit(onSubmit, onError)} className='w-full sm:justify-center sm:w-[400px] space-y-6 flex flex-col' noValidate>
                         <article>
-                        <StyledDropzone control={control}  name="files" disabled={isLoading} id="file" {...register("file", {
-                                required:{
+                            <StyledDropzone control={control} name="files" disabled={isLoading} id="file" {...register("file", {
+                                required: {
                                     value: true,
                                     message: "A file is required"
-                                } 
+                                }
                             })} />
                             <p className="error">{errors.file?.message}</p>
                         </article>
-                        {/* <article>
-                            <input disabled={isLoading} id="file" type="file" {...register("file", {
-                                required:{
-                                    value: true,
-                                    message: "A file is required"
-                                } 
-                            })} />
-                            <p className="error">{errors.file?.message}</p>
-                        </article> */}
                         <article>
                             <label htmlFor='manualname' className="font-medium mb-2">Product Name</label>
                             <input disabled={isLoading} id="manualname" className="w-full rounded-md border-0 bg-white/5 px-3.5 py-2 text-slate-900 font-sm shadow-sm ring-1 ring-inset dark:text-white  ring-gray/10 focus:ring-1 focus:ring-inset sm:text-sm sm:leading-6 hover:ring-gray-600"
-                            placeholder='Ex: Samsung Spin Cycle 3000'
-                            {...register("productName", { required:{
-                                value: true, 
-                                message: "A product name is required"
-                                } 
-                            })}
+                                placeholder='Ex: Samsung Spin Cycle 3000'
+                                {...register("productName", {
+                                    required: {
+                                        value: true,
+                                        message: "A product name is required"
+                                    }
+                                })}
                             />
                             <p className="error">{errors.productName?.message}</p>
                             {/* onChange={(e) => { setproductName(e.target.value.toLowerCase()) }} /> */}
@@ -131,12 +123,13 @@ export default function Upload() {
                         <article>
                             <label htmlFor='companyname' className="font-medium mb-2">Company Name</label>
                             <input disabled={isLoading} id="companyname" className="w-full rounded-md border-0 bg-white/5 px-3.5 py-2 text-slate-900 dart:text-white font-sm shadow-sm ring-1 ring-inset ring-gray/10 focus:ring-1 focus:ring-inset sm:text-sm sm:leading-6 hover:ring-gray-600"
-                            placeholder='Ex: Samsung'
-                            {...register("companyName", { required:{
-                                value: true, 
-                                message: "A company name is required",
-                            } 
-                            })}
+                                placeholder='Ex: Samsung'
+                                {...register("companyName", {
+                                    required: {
+                                        value: true,
+                                        message: "A company name is required",
+                                    }
+                                })}
                             />
                             <p className="error">{errors.companyName?.message}</p>
                         </article>
@@ -147,15 +140,16 @@ export default function Upload() {
                                 {
                                     "text-gray-300": productType === "",
                                 }
-                                )}
-                                onChange={(e) => { setProductType(e.target.value) }} 
-                                
-                                {...register("productType", { validate: (fieldValue) => {
-                                    return fieldValue !== "" || "Please select an option"
-                                }
-                               
-                            })}>
-                            
+                            )}
+                                onChange={(e) => { setProductType(e.target.value) }}
+
+                                {...register("productType", {
+                                    validate: (fieldValue) => {
+                                        return fieldValue !== "" || "Please select an option"
+                                    }
+
+                                })}>
+
                                 <option className="text-gray-300" value="" disabled>Select your option</option>
                                 <option value="dishwasher">Dishwasher</option>
                                 <option value="washing machine">Washing Machine</option>
@@ -175,7 +169,7 @@ export default function Upload() {
                             </select>
                             <p className="error">{errors.productType?.message}</p>
                         </article>
-                        <Button disabled={isLoading} id="upload" className={buttonStyle}>{isLoading ? "Uploading...": "Upload"}</Button>
+                        <Button disabled={isLoading} id="upload" className={buttonStyle}>{isLoading ? "Uploading..." : "Upload"}</Button>
                     </form>
                     {/* <DevTool control={control}/> */}
                     {uploaded ?
