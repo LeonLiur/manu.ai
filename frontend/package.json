@@ -29,12 +29,14 @@
     "qrcode.react": "^3.1.0",
     "react": "^18",
     "react-dom": "^18",
+    "react-dropzone": "^14.2.3",
     "react-select": "^5.8.0",
     "sharp": "^0.33.1",
     "tailwind-merge": "^2.0.0",
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "@hookform/devtools": "^4.3.1",
     "autoprefixer": "^10.4.16",
     "eslint": "^8",
     "eslint-config-next": "14.0.1",
