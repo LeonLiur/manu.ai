@@ -56,9 +56,6 @@ export default function Upload() {
 
     return (
         <div className="py-6 items-center justify-center" style={{ width: "100%", height: "100%" }}>
-            <div className="flex flex-row mx-10">
-                <a href="" className="text-3xl font-bold">Manu.ai</a>
-            </div>
             <div className="flex mt-10 w-[700] min-w-[400] justify-center items-center">
                 <div className="flex flex-col p-10 border-2  border-gray-400 dark:border-gray-600 rounded-md shadow-md shadow-gray-300 dark:shadow-slate-900 gap-4">
                     <div className="flex flex-col justify-center">
