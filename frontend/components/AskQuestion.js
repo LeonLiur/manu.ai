@@ -108,7 +108,7 @@ export default function AskQuestion({ manual_id, manual_device, file_url, manual
                             </div>
                             <Button
                                 className="hover:bg-slate-700 active:scale-105 transition-transform duration-100"
-                                onClick={handleOnClick}>SUBMIT
+                                onClick={handleOnClick}>SEARCH
                             </Button>
 
                         </div>
