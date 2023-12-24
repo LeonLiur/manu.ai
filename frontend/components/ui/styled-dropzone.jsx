@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, forwardRef } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Controller } from 'react-hook-form';
 
@@ -30,7 +30,7 @@ const rejectStyle = {
     borderColor: '#ff1744'
 };
 
-function StyledDropzone({ control, name, ...rest}) {
+const StyledDropzone = forwardRef(({ control, name, ...rest}, ref) => {
     return (
         <Controller
             control={control}
@@ -64,7 +64,7 @@ function StyledDropzone({ control, name, ...rest}) {
                 ));
 
                 return (
-                    <div className="container w-full cursor-pointer">
+                    <div className="container w-full cursor-pointer" ref={ref}>
                         <div {...getRootProps({ style })}>
                             <input {...getInputProps()} />
                             <div>
@@ -83,7 +83,7 @@ function StyledDropzone({ control, name, ...rest}) {
             }}
         />
     );
-}
+})
 
 export default StyledDropzone;
 

@@ -42,9 +42,7 @@ export default function Upload() {
     }, [isLoading])
 
     const onError = (errors, e) => {
-
         console.log(errors, e);
-
     }
 
     const onSubmit = async (data) => {
@@ -52,23 +50,15 @@ export default function Upload() {
         setUploaded(false);
         if (!data.file[0]) console.log("No file selected");
         else {
-            let companyName = data.companyName.toLowerCase();
-            let productName = data.productName.toLowerCase();
-            let productType = data.productType;
+            const companyName = data.companyName.toLowerCase();
+            const productName = data.productName.toLowerCase();
+            const productType = data.productType;
 
             setCompanyName(companyName)
             setProductName(productName)
             setProductType(productType)
 
-            console.log(`data.file: ${data.file[0]}`)
-            console.log(data.file)
-            console.log(data.file[0].name)
-
-            console.log(companyName)
-            console.log(productName)
-            console.log(productType)
-
-            console.log("Uploading file...");
+            console.log(`Uploading file: ${data.file[0].name}`);
             const formData = new FormData();
             formData.append("file", data.file[0]);
             const add_to_db = await fetch(`${process.env["NEXT_PUBLIC_BACKEND_URL"]}/add_manual_to_db?company_name=${companyName}&product_name=${productName}&product_device=${productType}&file_name=${data.file[0].name}`, {
