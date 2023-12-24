@@ -1,7 +1,7 @@
 import React from "react";
 import Link from 'next/link'
 
-const Header = () => {
+export default function Header() {
     return (
         <div>
             <div className="flex justify-center">
@@ -11,7 +11,7 @@ const Header = () => {
                             <h1 className="uppercase pl-5 py-4 text-lg font-sans font-bold">MANU.AI</h1>
                         </Link>
                         <ul className="hidden lg:flex items-center text-[18px] font-semibold pl-32">
-                        <li className="px-10">
+                            <li className="px-10">
                                 <Link href="/" className="hover:underline underline-offset-4 decoration-2 decoration-black py-2 rounded-lg">Find Your Manual</Link>
                             </li>
                             <li className="px-10">
@@ -44,5 +44,3 @@ const Header = () => {
         </div>
     );
 };
-
-export default Header;
