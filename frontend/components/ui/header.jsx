@@ -57,10 +57,10 @@ export default function Header() {
                         Find your manual and browse others from the same manufacturer.
                     </ListItem>
                     <ListItem href="/" title="Search by Product">
-                        Search for your product and find it's manual.
+                        Search for your product and find its manual.
                     </ListItem>
                     <ListItem href="/company/whirlpool/w100" title="Try a Demo">
-                        Try a demo of Manu.AI
+                        Try a demo of Manu.AI.
                     </ListItem>
                 </ul>
             </NavigationMenuContent>
