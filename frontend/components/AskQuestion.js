@@ -77,9 +77,6 @@ export default function AskQuestion({ manual_id, manual_device, file_url, manual
 
     return (
         <div className="py-6 items-center justify-center" style={{ width: "100%", height: "100%" }}>
-            <div className="flex flex-row mx-10">
-                <a href="" className="text-3xl font-bold">Manu.ai</a>
-            </div>
             <div className="flex flex-col h-full mt-10" style={{ padding: "20px", width: "100%" }}>
                 <h1 className="text-5xl font-bold self-center mb-2">Ask Away</h1>
                 <div className="flex w-full justify-center mb-5 justify-items-center gap-2">
@@ -99,7 +96,7 @@ export default function AskQuestion({ manual_id, manual_device, file_url, manual
                         <div className='flex'>
                             <div className="relative w-full mr-2">
                                 <input
-                                    className="min-w-0 w-full mr-2 rounded-md border-0 bg-white/5 px-3.5 py-2 text-black font-medium shadow-sm ring-1 ring-inset ring-white/10 focus:ring-1 focus:ring-inset sm:text-sm sm:leading-6 "
+                                    className="min-w-0 w-full mr-2 rounded-md border-[1px] bg-white/5 px-3.5 py-2 text-black font-medium shadow-sm ring-1 ring-inset ring-white/10 focus:ring-1 focus:ring-inset sm:text-sm sm:leading-6 "
                                     name="question" id="question" placeholder="My dishwasher won't turn on" onChange={(e) => setQuestion(e.target.value)}>
                                 </input>
                                 <button className='absolute right-0 top-0 px-3 py-2'>
@@ -108,7 +105,7 @@ export default function AskQuestion({ manual_id, manual_device, file_url, manual
                             </div>
                             <Button
                                 className="hover:bg-slate-700 active:scale-105 transition-transform duration-100"
-                                onClick={handleOnClick}>SEARCH
+                                onClick={handleOnClick}>ASK
                             </Button>
 
                         </div>

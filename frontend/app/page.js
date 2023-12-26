@@ -25,7 +25,7 @@ const Home = () => {
                     href="upload_pdf" className="p-1 m-2 rounded-md text-white bg-indigo-500 border-2 border-indigo-500 px-4 font-semibold hover:border-indigo-900  hover:bg-indigo-900 hover:trandform ease-in-out duration-300">
                     Upload Yours </button>
                 </Link>
-                <button
+                <button href='/company/whirlpool/w1000'
                   className="p-1 m-2 rounded-md text-indigo-500 bg-transparent border-2 border-indigo-500 px-4 font-semibold hover:text-white hover:bg-indigo-500 hover:trandform ease-in-out duration-300">
                   <Link href='/company/whirlpool/w1000'>
                     Try a Demo
