@@ -20,7 +20,7 @@ const ProductList = ({products, emptyHeading, companyName}) => {
             key={product}
             cardHeader={product}
             cardContent={`Manual for ${product}`}
-            link={`/${companyName}/${product}`}
+            link={`/company/${companyName}/${product}`}
           />
         ))}
       </div>
