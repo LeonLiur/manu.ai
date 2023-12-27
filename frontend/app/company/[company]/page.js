@@ -1,10 +1,10 @@
+import SearchableProductList from "@/components/SearchableProductList";
 import Link from "next/link"
 
 export default function Page({ params }) {
-  const products = getCompanyProducts(params.company)
+  const productList = getCompanyProducts(params.company)
   return <>
-    <h1 className="w-120 text-lg">Manuals for {params.company}</h1>
-    {products}
+    {productList}
   </>
 }
 
@@ -14,12 +14,8 @@ async function getCompanyProducts(companyName) {
     cache: 'no-cache',
   }).then(data => data.json())
 
-  const products = res.products?.map((product) => <div className="underline" key={product}>
-    <Link href={`/${companyName}/${product}`}>
-      {product}
-    </Link>
-  </div>
-  )
+  const products = res.products;
 
-  return products
+  return <SearchableProductList company={companyName} products={products} />
 }
+
