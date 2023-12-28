@@ -4,10 +4,10 @@ import React from 'react'
 
 export default function Companies() {
 
-  const displayCompanies = getCompanies();
+  const companies = getCompanies();
 
   return (
-    displayCompanies
+    <SearchableCompanyList companies={companies} />
   )
 }
 
@@ -18,8 +18,6 @@ async function getCompanies () {
   }).then(data => data.json())
 
   console.log(res)
-  
-  const companies = res.companies;
 
-  return <SearchableCompanyList companies={companies} />
+  return res.companies;
 }
