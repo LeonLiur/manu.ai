@@ -3,7 +3,7 @@ import SearchablePureProductList from "@/components/SearchablePureProductsList";
 import Link from "next/link"
 
 export default async function Page() {
-  const { company_products } = await getProducts()
+  const company_products = await getProducts()
 
   return <>
     {company_products && <SearchablePureProductList companyProducts={company_products} />}
@@ -11,18 +11,18 @@ export default async function Page() {
 }
 
 async function getProducts() {
-    try{
-        const res = await fetch(`${process.env['BACKEND_URL']}/get_products`, {
-            method: 'GET',
-            cache: 'no-cache',
-        }).then(data => data.json())
+  try {
+    const res = await fetch(`${process.env['BACKEND_URL']}/get_products`, {
+      method: 'GET',
+      cache: 'no-cache',
+    }).then(data => data.json())
 
-        const companyProducts = res.company_products
+    const companyProducts = res.company_products
 
-        return {company_products: companyProducts}     
-    }
-    catch (error) {
+    return companyProducts
+  }
+  catch (error) {
     return null;
-    }
+  }
 }
 
