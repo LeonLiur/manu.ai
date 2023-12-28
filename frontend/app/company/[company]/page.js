@@ -1,10 +1,10 @@
 import SearchableProductList from "@/components/SearchableProductList";
 import Link from "next/link"
 
-export default function Page({ params }) {
-  const productList = getCompanyProducts(params.company)
+export default async function Page({ params }) {
+  const { companyName, products } = await getCompanyProducts(params.company)
   return <>
-    {productList}
+    <SearchableProductList company={companyName} products={products} />
   </>
 }
 
@@ -16,6 +16,6 @@ async function getCompanyProducts(companyName) {
 
   const products = res.products;
 
-  return <SearchableProductList company={companyName} products={products} />
+  return { company: companyName, products: products }
 }
 

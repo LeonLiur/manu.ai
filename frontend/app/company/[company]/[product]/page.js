@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 
 export default async function QueryPage({ params }) {
     const manualEntry = await getManualEntry(params)
-    if(manualEntry.status != 200){
+    if (manualEntry.status != 200) {
         notFound();
     }
 
