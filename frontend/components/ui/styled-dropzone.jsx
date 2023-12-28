@@ -5,7 +5,7 @@ import { Controller } from 'react-hook-form';
 // Define your styles here...
 
 // Separate component for dropzone logic
-const DropzoneComponent = ({ onChange, ...rest }) => {
+const DropzoneComponent = forwardRef(({ onChange, ...rest }, ref) => {
     const {
         acceptedFiles,
         getRootProps,
@@ -33,7 +33,7 @@ const DropzoneComponent = ({ onChange, ...rest }) => {
     ));
 
     return (
-        <div className="container w-full cursor-pointer">
+        <div className="container w-full cursor-pointer" ref={ref}>
             <div {...getRootProps({ style })}>
                 <input {...getInputProps()} />
                 <div>
@@ -49,7 +49,7 @@ const DropzoneComponent = ({ onChange, ...rest }) => {
             </div>
         </div>
     );
-};
+});
 
 // Your StyledDropzone component
 const StyledDropzone = forwardRef(({ control, name, ...rest }, ref) => {
