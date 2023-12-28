@@ -44,10 +44,10 @@ export default function Header() {
     >
         <Link href={'/'} className="w-full flex gap-2 justify-left items-center">
             <Image src={Logo} alt='Manu.AI' width={25} height={25} />
-            <span className="font-semibold dark:text-white">MANU.AI</span>
+            <span className="font-semibold dark:text-white hidden md:block">MANU.AI</span>
         </Link>
 
-        <NavigationMenu className='hidden md:block'>
+        <NavigationMenu className='sm:block'>
         <NavigationMenuList className='gap-6'>
             <NavigationMenuItem>
             <NavigationMenuTrigger>Find Your Manual</NavigationMenuTrigger>
@@ -56,7 +56,7 @@ export default function Header() {
                     <ListItem href="/company" title="Search by Company">
                         Find your manual and browse others from the same manufacturer.
                     </ListItem>
-                    <ListItem href="/" title="Search by Product">
+                    <ListItem href="/products" title="Search by Product">
                         Search for your product and find its manual.
                     </ListItem>
                     <ListItem href="/company/whirlpool/w100" title="Try a Demo">

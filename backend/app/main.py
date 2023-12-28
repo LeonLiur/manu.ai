@@ -251,6 +251,22 @@ def retrieve_manual_from_db(companyName: str, productName: str):
             detail=f"Error retrieving manual from database: {e}",
         )
 
+@app.get("/get_products")
+def get_products():
+    try:
+        response = (
+            supabase_client.table("manuals")
+            .select("company_name, product_name")
+            .execute()
+        )
+        company_products = [(row['company_name'], row['product_name']) for row in response.data]
+        return {"company_products": company_products}
+    except Exception as e:
+        print(f"[-] ERROR in /get_products: {e}")
+        return HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"{e}",
+        )
 
 @app.get("/get_company_products")
 def get_manuals_by_company(companyName: str):
