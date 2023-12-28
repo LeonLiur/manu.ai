@@ -51,6 +51,8 @@ const DropzoneComponent = forwardRef(({ onChange, ...rest }, ref) => {
     );
 });
 
+DropzoneComponent.displayName = 'DropzoneComponent';
+
 // Your StyledDropzone component
 const StyledDropzone = forwardRef(({ control, name, ...rest }, ref) => {
     return (
