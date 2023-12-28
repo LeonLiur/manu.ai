@@ -12,14 +12,14 @@ export default function Companies() {
 }
 
 async function getCompanies () {
-  // const res = await fetch(`${process.env['BACKEND_URL']}/get_companies`, {
-  //   method: 'GET',
-  //   cache: 'no-cache',
-  // }).then(data => data.json())
-  
-  // const companies = res.companies;
+  const res = await fetch(`${process.env['BACKEND_URL']}/get_companies`, {
+    method: 'GET',
+    cache: 'no-cache',
+  }).then(data => data.json())
 
-  const companies = ['whirlpool']
+  console.log(res)
+  
+  const companies = res.companies;
 
   return <SearchableCompanyList companies={companies} />
 }

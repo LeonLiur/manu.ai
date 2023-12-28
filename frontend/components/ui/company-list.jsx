@@ -5,11 +5,9 @@ const CompanyList = ({companies, emptyHeading}) => {
   let heading = emptyHeading;
   let count = companies.length;
   if (count > 0) {
-    const noun = count > 1 ? 'Manufactueres ' : 'Manufactuerer';
+    const noun = count > 1 ? 'Companies' : 'Company';
     heading = count + ' ' + noun;
   }
-
-  console.log(companies);
 
   return  <section className='flex flex-col gap-2'>
       <h2 className='justify-center text-center items-center'>{heading}</h2>

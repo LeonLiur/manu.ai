@@ -270,6 +270,25 @@ def get_manuals_by_company(companyName: str):
             detail=f"{e}",
         )
 
+@app.get("/get_companies")
+def get_companies():
+    try:
+        response = (
+            supabase_client.table("manuals")
+            .select("company_name")
+            .execute()
+        )
+        company_names = {row['company_name'] for row in response.data}  # Using a set for uniqueness
+        return {"companies": list(company_names)}
+    except Exception as e:
+        print(f"[-] ERROR in /get_companies: {e}")
+        return HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"{e}",
+        )
+
+        
+
 
 def handle_pdf(file):
     pdf = pypdf.PdfReader(file.file)
