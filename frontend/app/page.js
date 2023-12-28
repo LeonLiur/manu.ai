@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image'
 import LandingPageImage from '../public/LandingPageImage.png'
+import Script from 'next/script'
 
 const Home = () => {
   return (
@@ -124,6 +125,18 @@ const Home = () => {
           </Link>
         </div>
       </section>
+      <div className='container'>
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-T0F06T6DF7" />
+        <Script id='google-analytics'>
+          {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'G-T0F06T6DF7');
+          `}
+        </Script>
+      </div>
     </>
   );
 };
