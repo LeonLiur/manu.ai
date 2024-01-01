@@ -9,8 +9,8 @@ export const fontSans = FontSans({
 })
 
 export const metadata = {
-  title: 'Manu.AI',
-  description: 'Migrate to a smarter manual',
+  title: 'manu.AI',
+  description: 'The future of user manuals',
 }
 
 export default function RootLayout({ children }) {

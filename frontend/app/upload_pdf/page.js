@@ -5,7 +5,6 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import QRCode from 'qrcode.react';
 import clsx from 'clsx';
-import { DevTool } from '@hookform/devtools';
 import StyledDropzone from '@/components/ui/styled-dropzone';
 
 export default function Upload() {
@@ -14,8 +13,6 @@ export default function Upload() {
     const [companyName, setCompanyName] = useState();
     const [uploaded, setUploaded] = useState(false);
     const [availableURL, setAvailableURL] = useState();
-    const [loading, setLoading] = useState(false);
-    const [files, setFiles] = useState();
 
     useEffect(() => {
         setAvailableURL(`${window.location.protocol}//${window.location.host}/${companyName}/${productName}`)
