@@ -10,9 +10,6 @@ const SearchablePureProductList = ({companyProducts}) => {
 
     const filteredProducts = filterProducts(companyProducts, searchText)
 
-    console.log(typeof filteredProducts);
-    console.log("filtered products: " + filteredProducts);
-
     return <>
         <h1 className="mt-10 mb-5 text-center text-4xl bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600 font-bold w-120">All Products</h1>
         <section className="flex flex-col items-center justify-center">
