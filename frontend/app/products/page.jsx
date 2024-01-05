@@ -17,9 +17,9 @@ async function getProducts() {
             cache: 'no-cache',
         }).then(data => data.json())
 
-        const companyProducts = res.company_products
+        const companyProducts = res.companyProducts
 
-        return companyProducts     
+        return {company_products: companyProducts}
     }
     catch (error) {
     return null;
