@@ -25,4 +25,3 @@ async function getProducts() {
     return null;
   }
 }
-
