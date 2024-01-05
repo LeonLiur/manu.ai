@@ -15,7 +15,7 @@ export default function Upload() {
     const [availableURL, setAvailableURL] = useState();
 
     useEffect(() => {
-        setAvailableURL(`${window.location.protocol}//${window.location.host}/${companyName}/${productName}`)
+        setAvailableURL(`${window.location.protocol}//${window.location.host}/company/${companyName}/${productName}`)
     }, [uploaded, companyName, productName])
 
     const form = useForm({

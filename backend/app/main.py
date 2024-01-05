@@ -260,7 +260,8 @@ def get_products():
             .execute()
         )
         company_products = [(row['company_name'], row['product_name']) for row in response.data]
-        return {"company_products": company_products}
+        print(company_products)
+        return  {"company_products": company_products}
     except Exception as e:
         print(f"[-] ERROR in /get_products: {e}")
         return HTTPException(
