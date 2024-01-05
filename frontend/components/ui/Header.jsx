@@ -59,7 +59,7 @@ export default function Header() {
                     <ListItem href="/products" title="Search by Product">
                         Search for your product and find its manual.
                     </ListItem>
-                    <ListItem href="/company/whirlpool/w100" title="Try a Demo">
+                    <ListItem href="/company/whirlpool/dishwasher" title="Try a Demo">
                         Try a demo of Manu.AI.
                     </ListItem>
                 </ul>
