@@ -36,7 +36,7 @@ export default function Footer() {
                 <Link className="text-gray-600 hover:text-gray-800" href="">Upload Your Manual</Link>
               </li>
               <li>
-                <Link className="text-gray-600 hover:text-gray-800" href="">Get Statrted</Link>
+                <Link className="text-gray-600 hover:text-gray-800" href="">Get Started</Link>
               </li>
               <li>
                 <Link className="text-gray-600 hover:text-gray-800" href="">Terms & Conditions</Link>
