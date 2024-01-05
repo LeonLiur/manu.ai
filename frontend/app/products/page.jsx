@@ -19,7 +19,7 @@ async function getProducts() {
 
         const companyProducts = res.company_products
 
-        return {company_products: companyProducts}     
+        return companyProducts     
     }
     catch (error) {
     return null;
