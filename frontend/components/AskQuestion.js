@@ -44,22 +44,21 @@ export default function AskQuestion({ manual_id, manual_device, file_url, manual
             }).then(data => data.json())
         }
 
-        console.log(query_return)
-
+       
         setFix(query_return["result"])
         
         const kwd = query_return["query_documents"][0].split(/[|\n]/).reduce((longest, current) => {
             return current.length > longest.length ? current : longest;
         }, '')
 
-        setHighlightKeyword(kwd)
+        setHighlightKeyword(kwd.slice(0, -1))
 
         highlight({
-            keyword: kwd,
+            keyword: highlightKeyword,
             matchCase: false,
         })
 
-        console.log(kwd)
+        console.log(highlightKeyword)
     }
 
 
@@ -131,10 +130,10 @@ export default function AskQuestion({ manual_id, manual_device, file_url, manual
 
 
                 {file_url &&
-                    <div className="mx-10 px-10 mt-6">
+                    <div className="sm:mx-auto sm:px-5 mx-10 px-10 mt-6 sm:w-full">
                         <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
                             <div style={{ height: '750px' }}>
-                                <Viewer
+                                <Viewer 
                                     onDocumentLoad={() => setDocumentLoaded(true)}
                                     fileUrl={file_url ? file_url : "../blank_pdf.pdf"}
                                     plugins={[
