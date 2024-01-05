@@ -54,11 +54,11 @@ export default function AskQuestion({ manual_id, manual_device, file_url, manual
         setHighlightKeyword(kwd.slice(0, -1))
 
         highlight({
-            keyword: highlightKeyword,
+            keyword: kwd.slice(0, -1),
             matchCase: false,
         })
 
-        console.log(highlightKeyword)
+        console.log(`highlight keyword: ${kwd.slice(0, -1)}`)
     }
 
 

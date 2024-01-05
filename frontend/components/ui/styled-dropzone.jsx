@@ -62,7 +62,7 @@ const DropzoneComponent = ({ onChange, name, ...rest }) => {
 
     const acceptedFileItems = acceptedFiles.map(file => (
         <li key={file.path}>
-            {file.path} - {file.size} bytes
+            {file.path}
         </li>
     ));
 
@@ -73,11 +73,11 @@ const DropzoneComponent = ({ onChange, name, ...rest }) => {
                 <div>
                     {acceptedFiles.length > 0 ? 
                         <>
-                            <p className='font-semibold text-black'>Uploaded Files:</p>
+                            <p className='font-semibold text-black'>Uploaded:</p>
                             <ul className='text-black'>{acceptedFileItems}</ul>
                         </>
                         :
-                        <p>Drag &apos;n&apos; drop some files here, or click to select files</p>
+                        <p>Drag and drop files here, or click to select</p>
                     }
                 </div>
             </div>

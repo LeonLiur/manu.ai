@@ -198,7 +198,6 @@ def get_file_link(file_name: str, expiration: int = 3600):
 def add_manual_to_db(
     company_name: str, product_name: str, product_device: str, file_name: str
 ):
-    print("add manual to DBB")
     try:
         db_res = (
             supabase_client.table("manuals")

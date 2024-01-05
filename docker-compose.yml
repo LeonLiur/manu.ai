@@ -7,7 +7,7 @@ services:
     ports:
       - "80:3000"
     env_file:
-      - ./frontend/.env
+      - ./frontend/.env.local
 
   backend:
     build:

@@ -78,7 +78,7 @@ export default function Upload() {
     return (
         <div className="py-6 items-center justify-center" style={{ width: "100%", height: "100%" }}>
             <div className="flex mt-10 w-[700] min-w-[400] justify-center items-center">
-                <div className="flex flex-col p-10 border-2  border-gray-400 dark:border-gray-600 rounded-md shadow-md shadow-gray-300 dark:shadow-slate-900 gap-4">
+                <div className="flex flex-col items-center p-10 border-2  border-gray-400 dark:border-gray-600 rounded-md shadow-md shadow-gray-300 dark:shadow-slate-900 gap-4">
                     <div className="flex flex-col justify-center">
                         <p className="self-center h-12 w-12 text-3xl">📋</p>
                         <h1 className="self-center text-3xl font-bold mb-10">Upload PDF</h1>
@@ -160,7 +160,7 @@ export default function Upload() {
                     </form>
                     {/* <DevTool control={control}/> */}
                     {uploaded ?
-                        <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4">
                             <div className="flex items-center rounded-sm py-2 px-2 border-2 border-green-500">
                                 <div className="flex flex-col">
                                     <div className='flex items-center gap-2 mr-4'>
