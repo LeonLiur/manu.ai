@@ -7,15 +7,11 @@ export default async function QueryPage({ params }) {
         notFound();
     }
 
-    return <>
-        {
-            manualEntry.status === 200 ?
-                <div>
-                    <Ask_Question manual_id={manualEntry.manual_id} manual_device={manualEntry.product_device} file_url={manualEntry.url} manual_name={manualEntry.product_name} />
-                </div> :
-                <div>404: Manual Not Found</div>
-        }
-    </>
+    return (
+        <div>
+            <Ask_Question manual_id={manualEntry.manual_id} manual_device={manualEntry.product_device} file_url={manualEntry.url} manual_name={manualEntry.product_name} />
+        </div>
+    )
 }
 
 async function getManualEntry(params) {
