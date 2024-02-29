@@ -4,11 +4,11 @@ from fastapi.middleware.cors import CORSMiddleware
 import PyPDF2 as pypdf
 from tqdm import tqdm
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.document_loaders import PyPDFLoader
+from langchain_community.document_loaders import PyPDFLoader
 from dotenv import load_dotenv
 from langchain.embeddings.openai import OpenAIEmbeddings
 import os
-from langchain.chat_models import ChatOpenAI
+from langchain_community.chat_models import ChatOpenAI
 from openai import OpenAI
 import tabula
 import base64
@@ -20,7 +20,7 @@ import random
 from botocore.exceptions import ClientError
 from supabase import create_client, Client
 import pinecone
-from langchain.vectorstores import Pinecone
+from langchain_community.vectorstores import Pinecone
 
 
 BURN_MONEY = True
