@@ -138,6 +138,7 @@ export default function Upload() {
                                 })}>
 
                                 <option className="text-gray-300" value="" disabled>Select your option</option>
+                                <option value="fan">Oil Diffuser</option>
                                 <option value="dishwasher">Dishwasher</option>
                                 <option value="washing machine">Washing Machine</option>
                                 <option value="fridge">Refridgerator</option>
@@ -153,6 +154,9 @@ export default function Upload() {
                                 <option value="air fryer">Air Fryer</option>
                                 <option value="water heater">Water Heater</option>
                                 <option value="electric kettle">Electric Kettle</option>
+                                <option value="toaster">Toaster</option>
+                                <option value="coffee maker">Coffee Maker</option>
+                                <option value="vacuum cleaner">Vacuum Cleaner</option>
                             </select>
                             <p className="error">{errors.productType?.message}</p>
                         </article>
