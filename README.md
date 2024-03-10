@@ -1,4 +1,4 @@
-# manu.ai: [usermanuai.com](https://www.usermanuai.com)
+# manu.ai: [usermanuai.com](http://usermanuai.com/)
 Easily turn your dull user manual into an interactive search engine for your customers.
 
 [Leo Liu](https://www.leohliu.com), [Johnathan Mo](https://github.com/23jmo)
