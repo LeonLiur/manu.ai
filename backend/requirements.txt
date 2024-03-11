@@ -17,3 +17,5 @@ pydantic==2.5.2
 python-multipart==0.0.6
 tiktoken==0.5.2
 langchain-community
+langchain-openai
+langchain-pinecone==0.0.3

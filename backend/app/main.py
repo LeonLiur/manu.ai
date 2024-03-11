@@ -6,7 +6,7 @@ from tqdm import tqdm
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import PyPDFLoader
 from dotenv import load_dotenv
-from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
 import os
 from langchain_community.chat_models import ChatOpenAI
 from openai import OpenAI
@@ -19,9 +19,8 @@ import logging
 import random
 from botocore.exceptions import ClientError
 from supabase import create_client, Client
-import pinecone
-from langchain_community.vectorstores import Pinecone
-
+from pinecone import Pinecone
+from langchain_pinecone import PineconeVectorStore as PineconeStore
 
 BURN_MONEY = True
 
@@ -30,10 +29,10 @@ load_dotenv()
 logger = logging.getLogger()
 logger.setLevel(logging.ERROR)
 
-pinecone.init(api_key=os.environ["PINECONE_API_KEY"], environment="gcp-starter")
-index = pinecone.Index("manu-ai")
+pc = Pinecone(api_key=os.environ["PINECONE_API_KEY"], environment="gcp-starter")
+index = pc.Index("manu-ai")
 embeddings = OpenAIEmbeddings()
-pinecone_store = Pinecone(index, embeddings, "text")
+pinecone_store = PineconeStore(index, embeddings, "text")
 
 s3_client = boto3.client(
     "s3",
