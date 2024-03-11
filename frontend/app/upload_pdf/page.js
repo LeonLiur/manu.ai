@@ -138,7 +138,7 @@ export default function Upload() {
                                 })}>
 
                                 <option className="text-gray-300" value="" disabled>Select your option</option>
-                                <option value="fan">Oil Diffuser</option>
+                                <option value="fan">Oil Infuser</option>
                                 <option value="dishwasher">Dishwasher</option>
                                 <option value="washing machine">Washing Machine</option>
                                 <option value="fridge">Refridgerator</option>
