@@ -47,13 +47,13 @@ export default function Upload() {
         setUploaded(false);
         if (!data.file[0]) console.log("No file selected");
         else {
-            const companyName = data.companyName.toLowerCase();
-            const productName = data.productName.toLowerCase();
-            const productType = data.productType;
+            const companyName = processName(data.companyName);
+            const productName = processName(data.productName);
+            const productType = processName(data.productType);
 
-            setCompanyName(companyName)
-            setProductName(productName)
-            setProductType(productType)
+            setCompanyName(companyName);
+            setProductName(productName);
+            setProductType(productType);
 
             console.log(`Uploading file: ${data.file[0].name}`);
             const formData = new FormData();
@@ -70,6 +70,15 @@ export default function Upload() {
             setUploaded(uploadRes.status == 200)
             form.reset();
         }
+    }
+
+    const processName = (text) => {
+            return text
+              .normalize('NFD') 
+              .replace(/[\u0300-\u036f]/g, '') 
+              .replace(/[^a-zA-Z0-9]/g, '-') 
+              .replace(/-+/g, '-') 
+              .toLowerCase();
     }
 
     const { register, control, handleSubmit, formState } = form;
@@ -138,7 +147,7 @@ export default function Upload() {
                                 })}>
 
                                 <option className="text-gray-300" value="" disabled>Select your option</option>
-                                <option value="fan">Oil Infuser</option>
+                                <option value="oil infuser">Oil Infuser</option>
                                 <option value="dishwasher">Dishwasher</option>
                                 <option value="washing machine">Washing Machine</option>
                                 <option value="fridge">Refridgerator</option>
