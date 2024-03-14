@@ -71,13 +71,14 @@ export default function Upload() {
             form.reset();
         }
     }
-
+    
     const processName = (text) => {
             return text
               .normalize('NFD') 
               .replace(/[\u0300-\u036f]/g, '') 
-              .replace(/[^a-zA-Z0-9]/g, '-') 
-              .replace(/-+/g, '-') 
+              .replace(/[^a-zA-Z0-9]/g, '') 
+              .trim()
+              .replace(/\s+/g, '-') 
               .toLowerCase();
     }
 
