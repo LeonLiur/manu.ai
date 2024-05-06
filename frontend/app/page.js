@@ -28,7 +28,7 @@ const Home = () => {
                 </Link>
                 <button href='/company/whirlpool/dishwasher'
                   className="p-1 m-2 rounded-md text-indigo-500 bg-transparent border-2 border-indigo-500 px-4 font-semibold hover:text-white hover:bg-indigo-500 hover:trandform ease-in-out duration-300">
-                  <Link href='/company/whirlpool/dishwasher'>
+                  <Link href='/company/whirlpool/w4000'>
                     Try a Demo
                   </Link></button>
               </div>
