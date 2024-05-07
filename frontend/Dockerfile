@@ -15,7 +15,7 @@ RUN apk add --update --no-cache \
     autoconf \
     automake
 
-RUN npm install
+RUN npm install --verbose
 
 COPY . .
 
